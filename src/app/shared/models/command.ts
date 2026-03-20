@@ -1,6 +1,6 @@
-import "../types.ts"
+import { CMDTYPE } from "../types.ts";
 
-class CMD {
+export class Command {
     public key: string;
     public returns: CMDTYPE;
     public expects: CMDTYPE[];

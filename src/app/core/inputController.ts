@@ -1,12 +1,12 @@
-import "../shared/models/inputArg";
-import "../shared/utils.ts";
-import "../assets/commands.ts";
+import { InputToken } from "../shared/models/inputToken.ts";
+import { addAsDigits, isType } from "../shared/utils.ts";
+import { commands } from "../assets/commands.ts";
 
-class InputController {
-    public inputArgs: InputArg[] = [];
+export class InputController {
+    public inputArgs: InputToken[] = [];
     public tempCount: number = 0;
 
-    public parseInputChar(input: string) {
+    public handleInput(input: string) {
 
         if (!this.validateAndParse(input)) {
             this.reset();
@@ -34,7 +34,7 @@ class InputController {
                 && !this.inputArgs.at(-1)?.cmd.expects.includes(tempCMD.returns))
                 return false;
 
-            this.inputArgs.push(new InputArg(input, this.tempCount));
+            this.inputArgs.push(new InputToken(input, this.tempCount));
             this.tempCount = 0;
             return true;
         }

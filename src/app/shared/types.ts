@@ -1,4 +1,4 @@
-enum CMDTYPE {
+export enum CMDTYPE {
     MOTION,
     STANDALONE, 
     OPERATOR,

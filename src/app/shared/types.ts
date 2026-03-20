@@ -1,0 +1,8 @@
+enum CMDTYPE {
+    MOTION,
+    STANDALONE, 
+    OPERATOR,
+    TEXTOBJ,
+    EMPTY,
+    NONE,
+}

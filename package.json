@@ -1,0 +1,8 @@
+{
+    "name": "vim-game",
+    "version": "0.0.1",
+    "engines": {
+        "node": ">=22.22.1",
+        "npm": ">=10.0.1"
+    }
+}

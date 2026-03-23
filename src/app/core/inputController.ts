@@ -1,6 +1,6 @@
-import { InputToken } from "../shared/models/inputToken.ts";
-import { addAsDigits, isType } from "../shared/utils.ts";
-import { commands } from "../assets/commands.ts";
+import { InputToken } from "../shared/models/inputToken.js";
+import { addAsDigits, isType } from "../shared/utils.js";
+import { commands } from "../assets/commands.js";
 
 export class InputController {
     public inputArgs: InputToken[] = [];

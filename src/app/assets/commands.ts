@@ -1,5 +1,5 @@
-import { Command } from "../shared/models/command.ts";
-import { CMDTYPE } from "../shared/types.ts";
+import { Command } from "../shared/models/command.js";
+import { CMDTYPE } from "../shared/types.js";
 
 export let commands: Map<string, Command> = new Map<string, Command>();
 commands.set('h', new Command('h', CMDTYPE.MOTION)); // move left

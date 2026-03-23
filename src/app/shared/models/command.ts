@@ -1,4 +1,4 @@
-import { CMDTYPE } from "../types.ts";
+import { CMDTYPE } from "../types.js";
 
 export class Command {
     public key: string;

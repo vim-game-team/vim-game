@@ -1,4 +1,4 @@
-import { CMDTYPE } from "../types.js";
+import { CMDTYPE } from "../../features/game/models/types.js";
 
 export class Command {
     public key: string;

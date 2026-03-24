@@ -1,11 +1,8 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { Component } from '@angular/core';
+import { RouterOutlet } from "@angular/router";
+import { appConfig } from './app/app.config';
+import { App } from "./app/app"
 
-@Component({
-  selector: 'app-root',
-  standalone: true,
-  template: `<h1>Hello, World!</h1>`
-})
-class App {}
-  
-bootstrapApplication(App);
+bootstrapApplication(App, appConfig)
+.catch((error)=>console.log("ERROR: " + error));

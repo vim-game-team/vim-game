@@ -1,0 +1,8 @@
+.tile{
+    width: 48px;
+    height: 48px;
+    border: 1px solid black;
+}
+.ground{
+    background-color: rgb(59, 168, 59);
+}

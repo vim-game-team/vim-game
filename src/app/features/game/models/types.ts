@@ -6,3 +6,8 @@ export enum CMDTYPE {
     EMPTY,
     NONE,
 }
+export enum TileType {
+    EMPTY = "empty",
+    GROUND = "ground",
+    WALL = "wall"
+}

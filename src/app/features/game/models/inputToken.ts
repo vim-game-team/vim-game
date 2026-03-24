@@ -1,5 +1,5 @@
-import { Command } from "./command.js";
-import { CMDTYPE } from "../types.js";
+import { Command } from "../../../shared/models/command.js";
+import { CMDTYPE } from "./types.js";
 
 export class InputToken {
     public count: number;

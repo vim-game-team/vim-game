@@ -1,13 +1,23 @@
-import { InputToken } from "../shared/models/inputToken.js";
-import { addAsDigits, isType } from "../shared/utils.js";
-import { commands } from "../assets/commands.js";
+import { Injectable } from "@angular/core"
+import { InputToken } from "../models/inputToken.js";
+import { addAsDigits, isType } from "../../../shared/utils.js";
+import { commands } from "../../../shared/constants/commands.js";
+import { fromEvent } from "rxjs";
 
-export class InputController {
+@Injectable()
+export class InputInterpreter {
     public inputArgs: InputToken[] = [];
     public tempCount: number = 0;
+    public listen: boolean = true;
 
+    public constructor() {
+        fromEvent<KeyboardEvent>(document, 'keydown')
+            .subscribe(event => this.handleInput(event.key))
+    }
+    
     public handleInput(input: string) {
-
+        if (this.listen)
+            return;
         if (!this.validateAndParse(input)) {
             this.reset();
             return;
@@ -48,7 +58,6 @@ export class InputController {
         if (this.inputArgs.length == 0 && this.inputArgs.at(-1)?.cmd.expects.length != 0)
             return;
 
-
         this.reset();
     }
 
@@ -56,8 +65,4 @@ export class InputController {
         this.inputArgs = [];
         this.tempCount = 0;
     }
-}
-enum InputState {
-    IDLE,
-    OPERATOR
 }

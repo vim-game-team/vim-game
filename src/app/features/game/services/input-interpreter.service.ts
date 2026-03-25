@@ -3,26 +3,32 @@ import { InputToken } from "../models/inputToken.js";
 import { addAsDigits, isType } from "../../../shared/utils.js";
 import { commands } from "../../../shared/constants/commands.js";
 import { fromEvent } from "rxjs";
+import { CommandService } from "./command.service.js";
+import { GameState } from "../services/game-state.service";
 
 @Injectable()
 export class InputInterpreter {
     public inputArgs: InputToken[] = [];
     public tempCount: number = 0;
     public listen: boolean = true;
+    public executor: CommandService;
 
-    public constructor() {
+    public constructor(gameState: GameState) {
+        console.log("CONSTRUCTING INTERPRETER")
+        this.executor = new CommandService(gameState);
+        
         fromEvent<KeyboardEvent>(document, 'keydown')
             .subscribe(event => this.handleInput(event.key))
     }
-    
+
     public handleInput(input: string) {
-        if (this.listen)
+        if (!this.listen)
             return;
         if (!this.validateAndParse(input)) {
             this.reset();
             return;
         }
-
+        console.log("TOKENS: " + JSON.stringify(this.inputArgs));
         this.executeIfPossible();
     }
 
@@ -58,6 +64,7 @@ export class InputInterpreter {
         if (this.inputArgs.length == 0 && this.inputArgs.at(-1)?.cmd.expects.length != 0)
             return;
 
+        this.executor.execute(this.inputArgs);
         this.reset();
     }
 

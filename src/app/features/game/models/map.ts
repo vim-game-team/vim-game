@@ -15,7 +15,6 @@ export class Map {
                 .fill(new Tile(TileType.GROUND)));
         console.log("creating chunk: " + i++);
     }
-
     public loadChunks() {
         // let toLoadPosY = GameState.player.posX / GameConfig.chunkSize;
         // let toLoadPosX = GameState.player.posY / GameConfig.chunkSize;
@@ -25,4 +24,5 @@ export class Map {
             // this.chunks[toLoadPosY + i][toLoadPosX + i] = assign tempChunkData;
         }
     }
+    
 }

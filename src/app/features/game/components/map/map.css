@@ -1,4 +1,11 @@
 .tile-row{
     display: flex;
-    flex-direction: row
+    flex-direction: column
+}
+.map-container{
+    display: flex;
+    flex-direction: row;
+}
+.player{
+    background-color: rgb(72, 72, 72);
 }

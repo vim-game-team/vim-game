@@ -1,24 +1,37 @@
-import { Component, inject, Input } from "@angular/core";
+import { Component, inject, effect } from "@angular/core";
 import { GameState } from "../../services/game-state.service"
 import { TileComponent } from "../tile/tile.component";
-
+import { GameConfig } from "../../services/game-config.service"
+import { Player } from "../../models/player";
 @Component({
     selector: "map-component",
     imports: [TileComponent],
     template: `
-    @for(tileRow of gameState.map.tiles; track $index ) 
+    <div class="map-container">
+
+    @for(tileRow of gameState.map.tiles; track $index; let rowIndex = $index ) 
     {
         <div class="tile-row">
-            @for(tile of tileRow; track $index)
+            @for(tile of tileRow; track $index; let colIndex = $index)
             {
-                <tile-component [tile]="tile" />
+                <tile-component id="tile-{{ rowIndex }}-{{colIndex}}"
+                [tile]="tile" 
+                />
             }
         </div>
     }
+    </div>
     `,
     styleUrl: "./map.css"
 })
 
 export class MapComponent {
     public gameState = inject(GameState);
+    // private player = inject(Player);
+
+    // constructor() {
+    //     effect(() => { 
+    //         this.
+    //     })
+    // }
 };

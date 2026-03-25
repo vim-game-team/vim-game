@@ -1,6 +1,7 @@
 import { GameState } from "./game-state.service";
 import { InputToken } from "../models/inputToken";
 import { Command } from "../../../shared/models/command";
+import { CmdType } from "../models/types";
 
 export class CommandService {
     public gameState: GameState;
@@ -10,25 +11,43 @@ export class CommandService {
     }
 
     public execute(tokens: InputToken[]) {
-        tokens.forEach((token) => {
-            const func = (this as any)["execute_" + token.cmd.key];
-            func.call(this);
-        });
+        let action: CmdType = tokens[0].cmd.returns as CmdType;
+        const executeFunction = (this as any)["execute_" + tokens[0].cmd.key];
+
+        switch (action) {
+            case CmdType.MOTION: {
+                let result: any = executeFunction.call(this);
+                for (let i = 0; i < tokens[0].count; i++)
+                    this.gameState.player.move(result[0], result[1]);
+                break;
+            }
+            case CmdType.OPERATOR:
+            case CmdType.TEXTOBJ:
+            case CmdType.NONE:
+        }
     }
 
     public execute_h() {
         console.log("CALLED execute_h!!!!!!");
-        this.gameState.player.move(-1, 0);
+        return [-1, 0];
     }
 
     public execute_j() {
-        this.gameState.player.move(0, 1);
+        return [0, 1];
     }
 
     public execute_k() {
-        this.gameState.player.move(0, -1);
+        return [0, -1];
     }
+
     public execute_l() {
-        this.gameState.player.move(1, 0);
+        return [1, 0];
+    }
+
+    public execute_w(count1: number, cmd: Command) {
+        const func = (this as any)["execute_" + cmd.key];
+        let motion: CmdType.MOTION = func.call(this);
+
+
     }
 }

@@ -7,8 +7,12 @@ export function addAsDigits(num1: any, num2: any): number {
 
 export function isType(val: any, type: string): boolean {
     return typeof (val) == type;
-
 }
+
+export function isNumeric(val: string) {
+    return isNaN(Number(val)) ? false : true;
+}
+
 export function max(num1: number, num2: number) {
     return num1 > num2
         ? num1

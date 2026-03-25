@@ -11,7 +11,6 @@ export class Player {
         this.drawPlayer();
     }
     public move(x: number = 0, y: number = 0) {
-
         let moveX = x > 0
             ? min(this.posX() + x, GameConfig.chunkSize - 1)
             : max(x, 0);

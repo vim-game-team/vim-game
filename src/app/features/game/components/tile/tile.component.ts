@@ -4,7 +4,7 @@ import { Tile } from "../../models/tile";
 
 @Component({
     selector: "tile-component",
-    template: `<div id="{{id}}"class="tile {{ tile.type }}"></div> `,
+    template: `<div id="{{id}}"class="tile {{ tile.type }}">{{tile.letter}}</div> `,
     styleUrl: "./tile.css"
 })
 

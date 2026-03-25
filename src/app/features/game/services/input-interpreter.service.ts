@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core"
 import { InputToken } from "../models/inputToken.js";
-import { addAsDigits, isType } from "../../../shared/utils.js";
+import { addAsDigits, isNumeric } from "../../../shared/utils.js";
 import { commands } from "../../../shared/constants/commands.js";
 import { fromEvent } from "rxjs";
 import { CommandService } from "./command.service.js";
@@ -14,14 +14,14 @@ export class InputInterpreter {
     public executor: CommandService;
 
     public constructor(gameState: GameState) {
-        console.log("CONSTRUCTING INTERPRETER")
         this.executor = new CommandService(gameState);
-        
+
         fromEvent<KeyboardEvent>(document, 'keydown')
             .subscribe(event => this.handleInput(event.key))
     }
 
     public handleInput(input: string) {
+        console.log("input: " + input);
         if (!this.listen)
             return;
         if (!this.validateAndParse(input)) {
@@ -35,13 +35,13 @@ export class InputInterpreter {
     public validateAndParse(input: string): boolean {
         try {
             let tempCMD;
-            if (isType(input, 'number')) {
+            if (isNumeric(input)) {
                 this.tempCount = this.tempCount == 0
                     ? Number(input)
                     : addAsDigits(this.tempCount, input);
                 return true;
             }
-
+            console.log("not numeric");
             tempCMD = commands.get(input);
             if (tempCMD === undefined)
                 return false;

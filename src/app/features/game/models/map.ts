@@ -1,28 +1,51 @@
 import { Tile } from "./tile";
-import { TileType } from "./types";
 import { GameConfig } from "../services/game-config.service";
+import { chunks } from "../constants/map-data";
+import { min, max } from "../../../shared/utils";
 
 export class Map {
     public tiles: Tile[][];
     private chunkLength: number;
 
-    public constructor() {
-        this.chunkLength = (GameConfig.chunkLoadDistance * 2) + 1;
-        let i = 0;
+    public constructor(curPosX: number = 0, curPosY = 0) {
+        let chunkDist = GameConfig.chunkLoadDistance;
+        let startChunkPosX = max(curPosX / GameConfig.chunkSize - chunkDist, 0);
+        let startChunkPosY = max(curPosY / GameConfig.chunkSize - chunkDist, 0);
+
+        this.chunkLength = (chunkDist * 2) + 1;
         this.tiles = new Array(this.chunkLength * GameConfig.chunkSize)
             .fill(false)
             .map(() => new Array(this.chunkLength * GameConfig.chunkSize)
-                .fill(new Tile(TileType.GROUND)));
-        console.log("creating chunk: " + i++);
-    }
-    public loadChunks() {
-        // let toLoadPosY = GameState.player.posX / GameConfig.chunkSize;
-        // let toLoadPosX = GameState.player.posY / GameConfig.chunkSize;
+                .fill(new Tile("L ")));
 
-        for (let i = 0; i < this.chunkLength; i++) {
-            // tempChunkData = DATA;
-            // this.chunks[toLoadPosY + i][toLoadPosX + i] = assign tempChunkData;
+        for (let chunkX = startChunkPosX; chunkX <= startChunkPosX + chunkDist; chunkX++) {
+            for (let chunkY = startChunkPosY; chunkY <= startChunkPosY + chunkDist; chunkY++) {
+                this.loadChunk(chunkX, chunkY, curPosX, curPosY);
+            }
         }
     }
-    
+
+    public loadChunk(chunkX: number, chunkY: number, curPosX: number, curPosY: number) {
+        let curChunkId = chunkX + "-" + chunkY;
+        console.log("checking chunk: " + curChunkId);
+        if (chunks.has(curChunkId)) {
+            let borderY, borderX: number;
+            let chunkData = chunks.get(curChunkId)!;
+            borderY = curPosY / GameConfig.chunkSize + min(chunkData.length, GameConfig.chunkSize);
+
+            console.log("found chunk: " + curChunkId);
+
+            for (let y = 0; y < borderY; y++) {
+                console.log("line: " + y);
+                borderX = curPosX / GameConfig.chunkSize + chunkData[y].length / 2;
+
+                for (let x = 0; x < borderX; x++) {
+
+                    let curTileData = chunkData[y].substring(x * 2, x * 2 + 2);
+                    console.log("tiledata: " + curTileData);
+                    this.tiles[x + chunkX * GameConfig.chunkSize][y + chunkY * GameConfig.chunkSize] = new Tile(curTileData);
+                }
+            }
+        }
+    }
 }

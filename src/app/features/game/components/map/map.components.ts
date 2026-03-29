@@ -1,8 +1,6 @@
-import { Component, inject, effect } from "@angular/core";
+import { Component, inject} from "@angular/core";
 import { GameState } from "../../services/game-state.service"
 import { TileComponent } from "../tile/tile.component";
-import { GameConfig } from "../../services/game-config.service"
-import { Player } from "../../models/player";
 @Component({
     selector: "map-component",
     imports: [TileComponent],
@@ -25,13 +23,8 @@ import { Player } from "../../models/player";
     styleUrl: "./map.css"
 })
 
-export class MapComponent {
+export class MapComponent{
     public gameState = inject(GameState);
-    // private player = inject(Player);
 
-    // constructor() {
-    //     effect(() => { 
-    //         this.
-    //     })
-    // }
+
 };

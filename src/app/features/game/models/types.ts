@@ -5,12 +5,27 @@ export enum CmdType {
     NONE = "none",
 }
 export enum TileType {
-    EMPTY = "empty",
-    GROUND = "ground",
-    WALL = "wall"
+    EMPTY = "e",
+    CHAR = "'",
+    WALL = "w",
+
 }
 
-export enum Action{
+export enum Action {
     MOVE,
     DELETE,
 }
+
+// export function encodeTileType(typeAndVal: string) {
+//     if (typeAndVal.at(0) == "'") {
+//         return TileType.CHAR
+//     }
+//     switch (typeAndVal.at(1)) {
+//         case "e": {
+//             return TileType.EMPTY;
+//         }
+//         case "w": {
+//             return TileType.WALL;
+//         }
+//     }
+// }

@@ -28,7 +28,6 @@ export class CommandService {
     }
 
     public execute_h() {
-        console.log("CALLED execute_h!!!!!!");
         return [-1, 0];
     }
 

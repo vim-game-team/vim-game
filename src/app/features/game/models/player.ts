@@ -1,34 +1,73 @@
 import { signal, effect } from "@angular/core";
 import { max, min } from "../../../shared/utils";
-import { GameConfig } from "../services/game-config.service"
+import { GameConfig } from "../constants/game-config"
+import { Map } from "./map";
+import { TileType } from "./types";
+import { Tile } from "./tile";
 
 export class Player {
     public posX = 0;
     public posY = 0;
+    public map: Map;
 
-    public constructor() {
+    public constructor(map: Map) {
         console.log("CONSTRUCTING PLAYER");
+        this.map = map;
         this.drawPlayer();
     }
 
-    public move(x: number = 0, y: number = 0) {
-        let moveX = x > 0
-            ? min(this.posX + x, GameConfig.chunkSize - 1)
-            : max(x, 0);
-        let moveY = y > 0
-            ? min(this.posY + y, GameConfig.chunkSize - 1)
-            : max(x, 0);
+    public move(moveX: number = 0, moveY: number = 0) {
+        console.log("moveX: " + moveX);
+        console.log("moveY: " + moveY);
 
-        this.posX =this.posX + x;
-        this.posY = this.posY + y;
+        if (!this.canMoveVertically(moveY))
+            return;
+        if (!this.canMoveHorizontally(moveX))
+            return;
+
+
+        this.posX = this.posX + moveX;
+        this.posY = this.posY + moveY;
+
+        console.log("MOVING PLAYER");
         this.drawPlayer();
     }
 
+    private canMoveHorizontally(xOffset: number): boolean {
+        let walkable = GameConfig.walkableTiles;
+        let sign = xOffset > 0 ? 1 : -1;
+        for (let i = 1; i <= Math.abs(xOffset); i++) {
+            if (!walkable.includes(this.relativeTileAt(i * sign, 0).type)) {
+                console.log("can't move horizontally");
+                return false;
+            }
+        }
+        console.log("can move");
+        return true;
+    }
+
+    private canMoveVertically(yOffset: number): boolean {
+        let walkable = GameConfig.walkableTiles;
+        let sign = yOffset > 0 ? 1 : -1;
+        for (let i = 1; i <= Math.abs(yOffset); i++) {
+            if (!walkable.includes(this.relativeTileAt(0, i * sign).type)) {
+                console.log("can't move vertically");
+                return false;
+            }
+        }
+        console.log("can move");
+        return true;
+    }
+
+    public relativeTileAt(x: number, y: number): Tile {
+        let tempTile = this.map.tileAt(this.posX + x, this.posY + y);
+        console.log("tile value: " + tempTile.value);
+        return tempTile;
+    }
     public drawPlayer() {
         document.getElementsByClassName("player")[0]?.classList.remove("player");
-        console.log("drawing?");
         let curTileId = "tile-" + this.posX + "-" + this.posY;
-        console.log(curTileId);
+        console.log("DRAWING PLAYER" + curTileId);
         let playerTile = document.getElementById(curTileId);
         playerTile?.classList.add("player");
     }

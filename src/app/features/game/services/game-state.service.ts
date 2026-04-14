@@ -6,8 +6,8 @@ export class GameState {
 
     public constructor() {
         console.log("CREATING GAME STATE")
-        this.player = new Player();
         this.map = new Map();
+        this.player = new Player(this.map);
     }
 
     // currChunk

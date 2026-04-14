@@ -46,7 +46,5 @@ export class CommandService {
     public execute_w(count1: number, cmd: Command) {
         const func = (this as any)["execute_" + cmd.key];
         let motion: CmdType.MOTION = func.call(this);
-
-
     }
 }

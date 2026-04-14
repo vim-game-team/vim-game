@@ -8,23 +8,25 @@ export class Tile {
         if (typeAndVal.length < 2)
             typeAndVal = "$e";
 
-        if (typeAndVal.at(0) == "'") {
-            this.type = TileType.CHAR;
-            this.value = typeAndVal.at(1)!;
-            return;
-        }
+        // if (typeAndVal.at(0) == "'") {
+        //     this.type = TileType.CHAR;
+        //     this.value = typeAndVal.at(1)!;
+        //     return;
+        // }
+        this.type = this.typeFromCode(typeAndVal.at(0)!);
+        this.value = typeAndVal.at(1)!;
 
-        switch (typeAndVal.at(1)) {
-            case "e": {
-                this.type = TileType.EMPTY;
-                break;
+    }
+    public typeFromCode(code: string): TileType {
+        switch (code) {
+            case "'": {
+                return TileType.GROUND;
             }
-            case "w": {
-                this.type = TileType.WALL;
-                break;
+            case "|": {
+                return TileType.WALL;
             }
             default: {
-                this.type = TileType.EMPTY;
+                return TileType.EMPTY;
             }
         }
     }

@@ -11,7 +11,7 @@ import { TileComponent } from "../tile/tile.component";
     {
         <div class="tile-row">
             @for(tile of tileRow; track $index; let colIndex = $index)
-            {
+            {   
                 <tile-component id="tile-{{ rowIndex }}-{{colIndex}}"
                 [tile]="tile" 
                 />

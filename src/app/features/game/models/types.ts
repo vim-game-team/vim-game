@@ -5,9 +5,9 @@ export enum CmdType {
     NONE = "none",
 }
 export enum TileType {
-    EMPTY = "e",
-    CHAR = "'",
-    WALL = "w",
+    EMPTY = "empty",
+    GROUND = "ground",
+    WALL = "wall",
 
 }
 

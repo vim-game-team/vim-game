@@ -5,6 +5,7 @@ import { commands } from "../../../shared/constants/commands.js";
 import { fromEvent } from "rxjs";
 import { CommandService } from "./command.service.js";
 import { GameState } from "../services/game-state.service";
+import { CmdType, InputMode } from "../models/types.js";
 
 @Injectable()
 export class InputInterpreter {
@@ -24,14 +25,37 @@ export class InputInterpreter {
         console.log("input: " + input);
         if (!this.listen)
             return;
+        try {
+
+            switch (this.executor.gameState.inputMode) {
+                case InputMode.MOTION: {
+                    this.parseMotionInput(input);
+                    break;
+                }
+                case InputMode.INSERT: {
+                    this.insertChar(input);
+                    break;
+                }
+            }
+        }
+        catch (e) {
+            console.log("FAILED: " + e);
+        }
+    }
+
+    public insertChar(input: string) {
+        this.executor.writeChar(input);
+    }
+
+    public parseMotionInput(input: string) {
         if (!this.validateAndParse(input)) {
             this.reset();
             return;
         }
         console.log("TOKENS: " + JSON.stringify(this.inputArgs));
         this.executeIfPossible();
-    }
 
+    }
     public validateAndParse(input: string): boolean {
         try {
             let tempCMD;
@@ -61,7 +85,7 @@ export class InputInterpreter {
     }
 
     public executeIfPossible() {
-        if (this.inputArgs.length == 0 && this.inputArgs.at(-1)?.cmd.expects.length != 0)
+        if (this.inputArgs.length == 0 || this.inputArgs.at(-1)?.cmd.expects.length != 0)
             return;
 
         this.executor.execute(this.inputArgs);

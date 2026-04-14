@@ -1,8 +1,8 @@
 .tile-row{
     display: flex;
-    flex-direction: column
+    flex-direction: row
 }
 .map-container{
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
 }

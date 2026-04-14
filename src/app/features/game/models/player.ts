@@ -11,26 +11,25 @@ export class Player {
     public map: Map;
 
     public constructor(map: Map) {
-        console.log("CONSTRUCTING PLAYER");
         this.map = map;
         this.drawPlayer();
     }
 
     public move(moveX: number = 0, moveY: number = 0) {
-        console.log("moveX: " + moveX);
-        console.log("moveY: " + moveY);
-
         if (!this.canMoveVertically(moveY))
             return;
         if (!this.canMoveHorizontally(moveX))
             return;
-
 
         this.posX = this.posX + moveX;
         this.posY = this.posY + moveY;
 
         console.log("MOVING PLAYER");
         this.drawPlayer();
+    }
+    public writeChar(char: string) {
+        this.map.insertCharAt(this.posX, this.posY, char);
+        // this.move(0, 1);
     }
 
     private canMoveHorizontally(xOffset: number): boolean {
@@ -59,12 +58,12 @@ export class Player {
         return true;
     }
 
-    public relativeTileAt(x: number, y: number): Tile {
+    private relativeTileAt(x: number, y: number): Tile {
         let tempTile = this.map.tileAt(this.posX + x, this.posY + y);
         console.log("tile value: " + tempTile.value);
         return tempTile;
     }
-    public drawPlayer() {
+    private drawPlayer() {
         document.getElementsByClassName("player")[0]?.classList.remove("player");
         let curTileId = "tile-" + this.posX + "-" + this.posY;
         console.log("DRAWING PLAYER" + curTileId);

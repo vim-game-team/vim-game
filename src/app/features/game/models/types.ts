@@ -3,7 +3,9 @@ export enum CmdType {
     OPERATOR = "operator",
     TEXTOBJ = "textobj",
     NONE = "none",
+    STANDALONE = "standalone"
 }
+
 export enum TileType {
     EMPTY = "empty",
     GROUND = "ground",
@@ -14,6 +16,10 @@ export enum TileType {
 export enum Action {
     MOVE,
     DELETE,
+}
+export enum InputMode{
+    MOTION,
+    INSERT,
 }
 
 // export function encodeTileType(typeAndVal: string) {

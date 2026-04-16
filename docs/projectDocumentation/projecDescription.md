@@ -14,7 +14,7 @@
 - Ana Florea
 - Lia Arjona Ochoa
 - Supjan Jakumov
-
+- Angelo Wang
 ---
 
 ## Title of the project

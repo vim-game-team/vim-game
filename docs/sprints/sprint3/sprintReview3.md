@@ -33,13 +33,13 @@
 | #16       | Bug: Spieler kann durch Wände laufen     |      4       |        -        |     -     |   -    |   -    | Zuständig: Angelo – Merge-Konflikt Risiko           |
 | #17       | Bug: Spieler Position                    |      4       |        -        |     -     |   -    |   -    | Zuständig: Supjan – Merge-Konflikt Risiko           |
 | #18       | Bug: w-Command nicht implementiert       |      4       |        -        |     -     |   -    |   -    | Zuständig: Angelo                                   |
-| #19       | Routing                                  |      4       |        -        |     -     |   -    |   -    | Zuständig: Ana                                      |
+| #19       | Routing                                  |      4       |        0,5      |     3,5   |  ✓    |   -    | Zuständig: Ana                                      |
 | #20       | Navbar Komponente erstellen              |      4       |        -        |     -     |   -    |   -    | Zuständig: Lia                                      |
 | #21       | Globale Styles                           |      4       |        -        |     -     |   -    |   -    | Zuständig: Yannik                                   |
-| #22       | Firebase einbinden                       |      3       |        -        |     -     |   -    |   -    | Zuständig: Ana                                      |
+| #22       | Firebase einbinden                       |      3       |        0,75     |    2,25   |   ✓    |   -    | Zuständig: Ana                                      |
 | #23       | Firebase: Auth aktivieren                |      2       |        -        |     -     |   -    |   -    | Zuständig: Yannik                                   |
 | #24       | Firebase: Setup dokumentieren (README)   |      4       |        -        |     -     |   -    |   -    | Zuständig: Lia                                      |
-| **TOTAL** |                                          |    **35**    |      **-**      |    **-**  | **-**  | **-**  |                                                     |
+| **TOTAL** |                                          |    **35**    |      **1,5**      |    **-**  | **-**  | **-**  |                                                     |
 
 ---
 ---

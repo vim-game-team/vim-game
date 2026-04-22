@@ -55,18 +55,34 @@ export class Map {
     }
 
     public tileAt(x: number, y: number): Tile {
-        console.log("coordX: " + x, "\ncoordY: " + y);
-        return this.tiles()[y][x];
+        return this.tiles().at(y)!.at(x)!;
+    }
+
+    public deleteCharAt(posX: number, posY: number) {
+        if (this.tileAt(posX-1, posY).type != TileType.GROUND)
+            return;
+
+        let lineEnd = this.findLineEnd(posX, posY);
+
+        this.tiles.update(t => {
+            let row = [...t[posY]];
+            row.copyWithin(posX - 1, posX, posX + lineEnd);
+            row[posX + lineEnd - 1] = new Tile("$ ");
+            t[posY] = row;
+            return [...t];
+        });
+
     }
 
     public insertCharAt(posX: number, posY: number, char: string) {
+        if (!this.canWriteAt(posX, posY))
+            throw "can't write, line full";
+
         let lineEnd = this.findLineEnd(posX, posY);
+
         this.tiles.update(t => {
             let row = [...t[posY]];
-            // console.log("row: " + JSON.stringify(row));
-            // console.log("START: " + posX + "\nEND: " + lineEnd);
-
-            row.copyWithin(posX + 1, posX, lineEnd);
+            row.copyWithin(posX + 1, posX, lineEnd + posX);
             row[posX] = new Tile("'" + char);
             t[posY] = row;
             return [...t];
@@ -79,20 +95,14 @@ export class Map {
         do {
             offset++;
             curTile = this.tileAt(posX + offset, posY);
-            // console.log("val: " + curTile.value);
+            console.log("val: " + curTile.value);
         }
         while (curTile.type == TileType.GROUND)
-        console.log("BOARDER: " + curTile.value);
-        console.log("TYPE: " + curTile.type);
+        return offset;
+    }
 
-        switch (curTile.type) {
-            case TileType.EMPTY: {
-                console.log("offset: " + offset)
-                return offset;
-            }
-            default: {
-                throw "line full, unable to write";
-            }
-        }
+    public canWriteAt(posX: number, posY: number): boolean {
+        let lineEnd = this.findLineEnd(posX, posY);
+        return this.tileAt(posX + lineEnd, posY).type == TileType.EMPTY;
     }
 }   

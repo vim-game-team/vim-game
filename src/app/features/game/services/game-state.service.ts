@@ -10,6 +10,6 @@ export class GameState {
     public constructor() {
         this.map = new Map();
         this.player = new Player(this.map);
-        this.inputMode = InputMode.MOTION;
+        this.inputMode = InputMode.VIM;
     }
 }

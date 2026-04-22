@@ -10,23 +10,27 @@ export class CommandService {
         this.gameState = gameState;
     }
 
-    public writeChar(input: string) {
-        this.gameState.player.writeChar(input);
-    }
 
     public execute(tokens: InputToken[]) {
         let action: CmdType = tokens[0].cmd.type as CmdType;
         const executeFunction = (this as any)["execute_" + tokens[0].cmd.key];
-        switch (action) {
-            case CmdType.MOVEMENT: {
-                let result: any = executeFunction.call(this);
-                for (let i = 0; i < tokens[0].count; i++)
-                    this.gameState.player.move(result[0], result[1]);
-                break;
+
+        try {
+            switch (action) {
+                case CmdType.MOVEMENT: {
+                    let result: any = executeFunction.call(this);
+                    for (let i = 0; i < tokens[0].count; i++)
+                        this.gameState.player.move(result[0], result[1]);
+                    break;
+                }
+                case CmdType.MODESWITCH: {
+                    let result: any = executeFunction.call(this);
+                    break;
+                }
             }
-            case CmdType.MODESWITCH: {
-                let result: any = executeFunction.call(this);
-            }
+        }
+        catch (e) {
+            
         }
     }
 
@@ -52,9 +56,7 @@ export class CommandService {
     }
 
     private execute_i() {
-        console.log("SWITCHING MODE");
-        this.gameState.inputMode = InputMode.INSERT;
-        console.log("mode: " + this.gameState.inputMode);
+        this.gameState.inputMode = InputMode.INSERT;    
     }
 
     private execute_a() {

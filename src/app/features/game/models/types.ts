@@ -15,7 +15,7 @@ export enum Action {
     DELETE,
 }
 export enum InputMode {
-    MOTION = "motion",
+    VIM = "VIM",
     INSERT = "insert",
 }
 

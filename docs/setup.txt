@@ -1,0 +1,10 @@
+installieren:
+node
+nvm
+
+run:
+nvm use
+npm 
+ng serve
+
+

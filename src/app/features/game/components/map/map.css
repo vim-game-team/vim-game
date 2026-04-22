@@ -1,0 +1,8 @@
+.tile-row{
+    display: flex;
+    flex-direction: row
+}
+.map-container{
+    display: flex;
+    flex-direction: column;
+}

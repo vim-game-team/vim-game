@@ -1,0 +1,19 @@
+.tile{
+    width: 48px;
+    height: 48px;
+    border: 1px solid black;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    text-justify: center;
+    font-size: 32px; 
+}
+.ground{
+    background-color: rgb(59, 168, 59);
+}
+.wall{
+    background-color: rgb(122, 122, 122);
+}
+.player{
+    background-color: rgba(0, 0, 0, 0.271);
+}

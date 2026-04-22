@@ -17,15 +17,20 @@ export class Player {
 
     public move(moveX: number = 0, moveY: number = 0) {
         if (!this.canMoveVertically(moveY)
-            || !this.canMoveHorizontally)
+            || !this.canMoveHorizontally(moveX))
             return;
 
         this.posX += moveX;
         this.posY += moveY;
 
-        console.log("MOVING PLAYER");
         this.drawPlayer();
     }
+
+    public deleteChar() {
+        this.map.deleteCharAt(this.posX, this.posY);
+        this.move(-1, 0);
+    }
+
     public writeChar(char: string) {
         console.log("posX: " + this.posX);
         this.map.insertCharAt(this.posX, this.posY, char);

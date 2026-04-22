@@ -1,12 +1,13 @@
 import { Component, inject } from '@angular/core'
 import { GameState } from './services/game-state.service';
-import { InputInterpreter } from './services/input-interpreter.service';
 import { MapComponent } from "./components/map/map.components";
 import { Subject } from 'rxjs';
+import { InputRouter } from './services/input/input-router.service';
+
 @Component({
     selector: "game",
     standalone: true,
-    providers: [InputInterpreter, GameState],
+    providers: [InputRouter, GameState],
     imports: [MapComponent],
     templateUrl: "./game.html"
 })
@@ -15,6 +16,6 @@ export class GameComponent {
     onWriteChar = new Subject<void>();
 
     public gameState = inject(GameState);
-    public inputInterpreter = inject(InputInterpreter);
+    public inputRouter = inject(InputRouter);
     
 };

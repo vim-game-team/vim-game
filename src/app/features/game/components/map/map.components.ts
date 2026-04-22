@@ -23,6 +23,4 @@ import { TileComponent } from "../tile/tile.component";
 
 export class MapComponent {
     public gameState = inject(GameState);
-
-
 };

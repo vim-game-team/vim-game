@@ -1,25 +1,22 @@
 export enum CmdType {
-    MOTION = "motion",
-    OPERATOR = "operator",
+    MOVEMENT = "movement",
+    MODESWITCH = "modeswitch",
     TEXTOBJ = "textobj",
-    NONE = "none",
-    STANDALONE = "standalone"
 }
 
 export enum TileType {
     EMPTY = "empty",
     GROUND = "ground",
     WALL = "wall",
-
 }
 
 export enum Action {
     MOVE,
     DELETE,
 }
-export enum InputMode{
-    MOTION,
-    INSERT,
+export enum InputMode {
+    MOTION = "motion",
+    INSERT = "insert",
 }
 
 // export function encodeTileType(typeAndVal: string) {

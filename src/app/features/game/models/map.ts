@@ -55,32 +55,39 @@ export class Map {
     }
 
     public tileAt(x: number, y: number): Tile {
-        return this.tiles().at(x)!.at(y)!;
+        console.log("coordX: " + x, "\ncoordY: " + y);
+        return this.tiles()[y][x];
     }
+
     public insertCharAt(posX: number, posY: number, char: string) {
-        // this.tiles().at(posY)?.copyWithin(posX + 1, posX, lineEnd - 1);
-        // this.tiles().at(posY)!.at(posX)!.value = char;
+        let lineEnd = this.findLineEnd(posX, posY);
         this.tiles.update(t => {
             let row = [...t[posY]];
-            let lineEnd = this.findLineEnd(posX, posY);
-            row.copyWithin(posX + 1, posX, lineEnd - 1);
+            // console.log("row: " + JSON.stringify(row));
+            // console.log("START: " + posX + "\nEND: " + lineEnd);
+
+            row.copyWithin(posX + 1, posX, lineEnd);
             row[posX] = new Tile("'" + char);
             t[posY] = row;
             return [...t];
         });
     }
+
     public findLineEnd(posX: number, posY: number): number {
         let curTile;
-        let offset = 0;
+        let offset = -1;
         do {
-            curTile = this.tileAt(posY, posX + offset);
-            console.log("curtile: " + curTile.type);
-            console.log("val: " + curTile.value);
             offset++;
+            curTile = this.tileAt(posX + offset, posY);
+            // console.log("val: " + curTile.value);
         }
         while (curTile.type == TileType.GROUND)
+        console.log("BOARDER: " + curTile.value);
+        console.log("TYPE: " + curTile.type);
+
         switch (curTile.type) {
             case TileType.EMPTY: {
+                console.log("offset: " + offset)
                 return offset;
             }
             default: {

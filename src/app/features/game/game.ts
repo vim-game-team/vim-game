@@ -13,6 +13,8 @@ import { Subject } from 'rxjs';
 export class GameComponent {
     onExecuteCommand = new Subject<void>();
     onWriteChar = new Subject<void>();
+
     public gameState = inject(GameState);
     public inputInterpreter = inject(InputInterpreter);
+    
 };

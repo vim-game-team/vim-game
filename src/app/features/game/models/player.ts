@@ -16,20 +16,20 @@ export class Player {
     }
 
     public move(moveX: number = 0, moveY: number = 0) {
-        if (!this.canMoveVertically(moveY))
-            return;
-        if (!this.canMoveHorizontally(moveX))
+        if (!this.canMoveVertically(moveY)
+            || !this.canMoveHorizontally)
             return;
 
-        this.posX = this.posX + moveX;
-        this.posY = this.posY + moveY;
+        this.posX += moveX;
+        this.posY += moveY;
 
         console.log("MOVING PLAYER");
         this.drawPlayer();
     }
     public writeChar(char: string) {
+        console.log("posX: " + this.posX);
         this.map.insertCharAt(this.posX, this.posY, char);
-        // this.move(0, 1);
+        this.move(1, 0);
     }
 
     private canMoveHorizontally(xOffset: number): boolean {

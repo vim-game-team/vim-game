@@ -25,29 +25,33 @@ export class InputInterpreter {
         console.log("input: " + input);
         if (!this.listen)
             return;
-        try {
 
-            switch (this.executor.gameState.inputMode) {
-                case InputMode.MOTION: {
-                    this.parseMotionInput(input);
-                    break;
-                }
-                case InputMode.INSERT: {
-                    this.insertChar(input);
-                    break;
-                }
-            }
+        try {
+            console.log("input mode: " + this.executor.gameState.inputMode);
+            this.parseInput(input);
         }
         catch (e) {
             console.log("FAILED: " + e);
         }
     }
+    private parseInput(input: string) {
 
-    public insertChar(input: string) {
+        switch (this.executor.gameState.inputMode) {
+            case InputMode.MOTION: {
+                this.parseMotionInput(input);
+                break;
+            }
+            case InputMode.INSERT: {
+                this.insertChar(input);
+                break;
+            }
+        }
+    }
+    private insertChar(input: string) {
         this.executor.writeChar(input);
     }
 
-    public parseMotionInput(input: string) {
+    private parseMotionInput(input: string) {
         if (!this.validateAndParse(input)) {
             this.reset();
             return;
@@ -56,43 +60,39 @@ export class InputInterpreter {
         this.executeIfPossible();
 
     }
-    public validateAndParse(input: string): boolean {
-        try {
-            let tempCMD;
-            if (isNumeric(input)) {
-                this.tempCount = this.tempCount == 0
-                    ? Number(input)
-                    : addAsDigits(this.tempCount, input);
-                return true;
-            }
-            console.log("not numeric");
-            tempCMD = commands.get(input);
-            if (tempCMD === undefined)
-                return false;
-
-            if (this.inputArgs.length > 0
-                && !this.inputArgs.at(-1)?.cmd.expects.includes(tempCMD.returns))
-                return false;
-
-            this.inputArgs.push(new InputToken(input, this.tempCount));
-            this.tempCount = 0;
+    private validateAndParse(input: string): boolean {
+        let tempCMD;
+        if (isNumeric(input)) {
+            this.tempCount = this.tempCount == 0
+                ? Number(input)
+                : addAsDigits(this.tempCount, input);
             return true;
         }
-        catch (e: any) {
-            console.log("validation or parsing error: " + e)
+
+        tempCMD = commands.get(input);
+        if (tempCMD === undefined)
             return false;
-        }
+
+        if (this.inputArgs.length > 0
+            && !this.inputArgs.at(-1)?.cmd.expects.includes(tempCMD.type))
+            return false;
+
+        this.inputArgs.push(new InputToken(input, this.tempCount));
+        this.tempCount = 0;
+        return true;
     }
 
-    public executeIfPossible() {
-        if (this.inputArgs.length == 0 || this.inputArgs.at(-1)?.cmd.expects.length != 0)
-            return;
 
+    private executeIfPossible() {
+        if (this.inputArgs.at(-1)?.cmd.expects.length != 0)
+            return
+
+        console.log("EXECUTING: ");
         this.executor.execute(this.inputArgs);
         this.reset();
     }
 
-    public reset() {
+    private reset() {
         this.inputArgs = [];
         this.tempCount = 0;
     }

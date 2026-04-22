@@ -9,56 +9,55 @@ export class CommandService {
     public constructor(gameState: GameState) {
         this.gameState = gameState;
     }
-    public writeChar(input: string){
+
+    public writeChar(input: string) {
         this.gameState.player.writeChar(input);
     }
 
     public execute(tokens: InputToken[]) {
-        let action: CmdType = tokens[0].cmd.returns as CmdType;
+        let action: CmdType = tokens[0].cmd.type as CmdType;
         const executeFunction = (this as any)["execute_" + tokens[0].cmd.key];
-
         switch (action) {
-            case CmdType.MOTION: {
+            case CmdType.MOVEMENT: {
                 let result: any = executeFunction.call(this);
                 for (let i = 0; i < tokens[0].count; i++)
-                    this.gameState.player.move(result[1], result[0]);
+                    this.gameState.player.move(result[0], result[1]);
                 break;
             }
-            case CmdType.STANDALONE:{
-                executeFunction.call(this);
-                break
+            case CmdType.MODESWITCH: {
+                let result: any = executeFunction.call(this);
             }
-            case CmdType.OPERATOR:
-            case CmdType.TEXTOBJ:
-            case CmdType.NONE:
         }
     }
 
-    public execute_h() {
+    private execute_h() {
         return [-1, 0];
     }
 
-    public execute_j() {
+    private execute_j() {
         return [0, 1];
     }
 
-    public execute_k() {
+    private execute_k() {
         return [0, -1];
     }
 
-    public execute_l() {
+    private execute_l() {
         return [1, 0];
     }
 
-    public execute_w(count1: number, cmd: Command) {
+    private execute_w(count1: number, cmd: Command) {
         const func = (this as any)["execute_" + cmd.key];
-        let motion: CmdType.MOTION = func.call(this);
+        let motion: CmdType.MOVEMENT = func.call(this);
     }
-    public execute_i(){
+
+    private execute_i() {
         console.log("SWITCHING MODE");
         this.gameState.inputMode = InputMode.INSERT;
+        console.log("mode: " + this.gameState.inputMode);
     }
-    public execute_a(){
+
+    private execute_a() {
         this.gameState.inputMode = InputMode.INSERT;
     }
 }

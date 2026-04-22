@@ -2,12 +2,16 @@ import { CmdType } from "../../features/game/models/types.js";
 
 export class Command {
     public key: string;
-    public returns: CmdType;
+    public type: CmdType;
     public expects: CmdType[];
 
-    public constructor(key: string, returns: CmdType, expects: CmdType[] = []) {
+    public constructor(
+        key: string,
+        type: CmdType,
+        expects: CmdType[] = []
+    ) {
         this.key = key;
-        this.returns = returns
+        this.type = type;
         this.expects = expects;
     }
 }

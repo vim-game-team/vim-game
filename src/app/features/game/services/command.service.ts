@@ -1,13 +1,16 @@
 import { GameState } from "./game-state.service";
 import { InputToken } from "../models/inputToken";
 import { Command } from "../../../shared/models/command";
-import { CmdType, InputMode } from "../models/types";
+import { CharType, CmdType, InputMode } from "../models/types";
+import { CmdUtils } from "./command-utils.service";
 
 export class CommandService {
     public gameState: GameState;
 
     public constructor(gameState: GameState) {
         this.gameState = gameState;
+        CmdUtils.map = gameState.map;
+        CmdUtils.player = gameState.player;
     }
 
 
@@ -30,7 +33,7 @@ export class CommandService {
             }
         }
         catch (e) {
-            
+
         }
     }
 
@@ -51,12 +54,17 @@ export class CommandService {
     }
 
     private execute_w(count1: number, cmd: Command) {
-        const func = (this as any)["execute_" + cmd.key];
-        let motion: CmdType.MOVEMENT = func.call(this);
+        let curChar = this.gameState.player.curTile().value;
+        let curCharType: CharType = CmdUtils.getCharType(curChar);
+        
+        let offset = CmdUtils.offsetToNextNonCharType(curCharType);
+        offset = CmdUtils.offsetToNextNonCharType(CharType.WHITESPACE, offset);
+
+        return [offset, 0];
     }
 
     private execute_i() {
-        this.gameState.inputMode = InputMode.INSERT;    
+        this.gameState.inputMode = InputMode.INSERT;
     }
 
     private execute_a() {

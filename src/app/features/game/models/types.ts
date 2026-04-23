@@ -14,21 +14,14 @@ export enum Action {
     MOVE,
     DELETE,
 }
+
 export enum InputMode {
     VIM = "VIM",
     INSERT = "insert",
 }
 
-// export function encodeTileType(typeAndVal: string) {
-//     if (typeAndVal.at(0) == "'") {
-//         return TileType.CHAR
-//     }
-//     switch (typeAndVal.at(1)) {
-//         case "e": {
-//             return TileType.EMPTY;
-//         }
-//         case "w": {
-//             return TileType.WALL;
-//         }
-//     }
-// }
+export enum CharType{
+    ALPHANUM = "alphanum",
+    WHITESPACE = "whitespace",
+    SYMBOL = "symbol",
+}

@@ -1,6 +1,6 @@
 import { Command } from "../../../../shared/models/command";
 import { InputMode } from "../../models/types";
-import { CommandParser } from "./command-parser";
+import { CommandParser } from "./command-parser.service";
 import { GameState } from "../game-state.service";
 import { Injectable } from "@angular/core";
 import { fromEvent } from "rxjs";

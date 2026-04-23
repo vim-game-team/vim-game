@@ -25,6 +25,10 @@ export class Player {
 
         this.drawPlayer();
     }
+    
+    public curTile(): Tile{
+        return this.map.tileAt(this.posX, this.posY);
+    }
 
     public deleteChar() {
         this.map.deleteCharAt(this.posX, this.posY);
@@ -44,7 +48,7 @@ export class Player {
             if (!walkable.includes(this.relativeTileAt(i * sign, 0).type)) {
                 console.log("can't move horizontally");
                 return false;
-            }
+        }
         }
         console.log("can move");
         return true;
@@ -63,15 +67,14 @@ export class Player {
         return true;
     }
 
-    private relativeTileAt(x: number, y: number): Tile {
+    public relativeTileAt(x: number, y: number): Tile {
         let tempTile = this.map.tileAt(this.posX + x, this.posY + y);
-        console.log("tile value: " + tempTile.value);
         return tempTile;
     }
+
     private drawPlayer() {
         document.getElementsByClassName("player")[0]?.classList.remove("player");
         let curTileId = "tile-" + this.posX + "-" + this.posY;
-        console.log("DRAWING PLAYER" + curTileId);
         let playerTile = document.getElementById(curTileId);
         playerTile?.classList.add("player");
     }

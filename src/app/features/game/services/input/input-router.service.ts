@@ -26,6 +26,7 @@ export class InputRouter {
                 this.commandParser.parse(input);
                 break;
             }
+            
             case InputMode.INSERT: {
                 if (this.writerService.validate(input))
                     this.writerService.write(input);

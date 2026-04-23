@@ -13,6 +13,10 @@ export function isNumeric(val: string) {
     return isNaN(Number(val)) ? false : true;
 }
 
+export function isAlphaNumeric(char: string) {
+    return char.toUpperCase() != char.toLowerCase() || isNumeric(char);
+}
+
 export function max(num1: number, num2: number) {
     return num1 > num2
         ? num1

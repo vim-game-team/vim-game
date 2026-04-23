@@ -4,96 +4,32 @@ import { CommandParser } from "./command-parser.service";
 import { GameState } from "../game-state.service";
 import { Injectable } from "@angular/core";
 import { fromEvent } from "rxjs";
+import { WriterService } from "./writer.service";
 
 @Injectable()
 export class InputRouter {
     gameState: GameState;
     commandParser: CommandParser;
-
+    writerService: WriterService;
     public constructor(gameState: GameState) {
         this.gameState = gameState;
         this.commandParser = new CommandParser(gameState);
+        this.writerService = new WriterService(gameState);
 
         fromEvent<KeyboardEvent>(document, 'keydown')
             .subscribe(event => this.handleInput(event.key))
     }
 
     public handleInput(input: string) {
-        if (!this.isInputValid(input))
-            return;
-
         switch (this.gameState.inputMode) {
             case InputMode.VIM: {
-                let translatedInput = this.translateSynonyms(input)!;
-                this.commandParser.parse(translatedInput);
+                this.commandParser.parse(input);
                 break;
             }
-
             case InputMode.INSERT: {
-                switch (input) {
-                    case "Backspace": {
-                        this.gameState.player.deleteChar();
-                        break;
-                    }
-                    case "Escape": {
-                        this.gameState.inputMode = InputMode.VIM;
-                        break;
-                    }
-                    default: {
-                        this.gameState.player.writeChar(input);
-                    }
-                }
+                if (this.writerService.validate(input))
+                    this.writerService.write(input);
             }
         }
     }
-
-    private isInputValid(input: string) {
-
-        switch (this.gameState.inputMode) {
-            case InputMode.INSERT: {
-                return this.isValidInInsertMode(input);
-                break;
-            }
-            case InputMode.VIM: {
-                return this.isValidInVimMode(input);
-                break;
-            }
-
-        }
-    }
-
-    private isValidInVimMode(input: string) {
-        let validSpecialKeys = [
-            ""
-        ];
-
-        return input.length == 1
-            || validSpecialKeys.includes(input);
-
-    }
-
-    private translateSynonyms(input: string) {
-        let synonyms: Map<string, string> = new Map();
-        synonyms.set("ArrowUp", "k");
-        synonyms.set("ArrowDown", "j");
-        synonyms.set("ArrowLeft", "h");
-        synonyms.set("ArrowRight", "l");
-        synonyms.set("Backspace", "h");
-
-        return synonyms.has(input)
-            ? synonyms.get(input)
-            : input;
-    }
-
-    private isValidInInsertMode(input: string) {
-        let validSpecialKeys = [
-            "Backspace",
-            "Escape"
-        ];
-
-        return input.length == 1
-            || validSpecialKeys.includes(input);
-
-    }
-
 }

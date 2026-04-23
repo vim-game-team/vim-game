@@ -8,7 +8,7 @@ import { TileComponent } from "../tile/tile.component";
     <div class="map-container">
     @for(tileRow of gameState.map.tiles(); track $index; let yIndex = $index ) 
     {
-        <div class="tile-row">
+        <div id="row-yIndex" class="tile-row">
             @for(tile of tileRow; track $index; let xIndex = $index)
             {   
                 <tile-component id="tile-{{ xIndex }}-{{yIndex}}"
@@ -23,4 +23,8 @@ import { TileComponent } from "../tile/tile.component";
 
 export class MapComponent {
     public gameState = inject(GameState);
+
+    public shift(){
+
+    }
 };

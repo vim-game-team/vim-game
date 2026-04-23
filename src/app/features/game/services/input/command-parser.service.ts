@@ -21,12 +21,12 @@ export class CommandParser {
             this.reset();
             return;
         }
-        // console.log("TOKENS: " + JSON.stringify(this.inputArgs));
         this.executeIfPossible();
-
     }
+    
     private validateAndParse(input: string): boolean {
         let tempCMD;
+        input = this.translateSynonyms(input)!;
         if (isNumeric(input)) {
             this.tempCount = this.tempCount == 0
                 ? Number(input)
@@ -52,14 +52,25 @@ export class CommandParser {
         if (this.inputArgs.at(-1)?.cmd.expects.length != 0)
             return
 
-        console.log("EXECUTING: ");
         this.executor.execute(this.inputArgs);
         this.reset();
     }
 
-    private reset() {
+    private translateSynonyms(input: string) {
+        let synonyms: Map<string, string> = new Map();
+        synonyms.set("ArrowUp", "k");
+        synonyms.set("ArrowDown", "j");
+        synonyms.set("ArrowLeft", "h");
+        synonyms.set("ArrowRight", "l");
+        synonyms.set("Backspace", "h");
+
+        return synonyms.has(input)
+            ? synonyms.get(input)
+            : input;
+    }
+
+    public reset() {
         this.inputArgs = [];
         this.tempCount = 0;
     }
-
 }

@@ -19,7 +19,7 @@ export class Player {
         if (!this.canMoveVertically(moveY) ||
             !this.canMoveHorizontally(moveX))
             return;
-
+        
         if (moveY != 0) {
             moveX = this.offsetToLineStart(0, moveY);
         }
@@ -77,7 +77,7 @@ export class Player {
 
         curTile = this.relativeTileAt(xSteps, ySteps * sign)
         while (curTile!.type == TileType.EMPTY) {
-            xSteps++;
+            xSteps--;
             curTile = this.relativeTileAt(xSteps, ySteps * sign)
         }
         return walkable.includes(curTile.type);
@@ -86,6 +86,7 @@ export class Player {
     private offsetToLineStart(posX: number, posY: number): number {
         let offset = 0;
         let curTile = this.relativeTileAt((posX + offset), posY);
+
         while (curTile!.type == TileType.EMPTY) {
             offset--;
             curTile = this.relativeTileAt((posX + offset), posY)

@@ -1,6 +1,6 @@
 import { signal, effect } from "@angular/core";
 import { max, min } from "../../../shared/utils";
-import { GameConfig } from "../constants/game-config"
+import { GC } from "../constants/game-config"
 import { Map } from "./map";
 import { TileType } from "./types";
 import { Tile } from "./tile";
@@ -47,7 +47,7 @@ export class Player {
     private canMoveHorizontally(xOffset: number): boolean {
         if (xOffset == 0) return true;
 
-        let walkable = GameConfig.walkableTiles;
+        let walkable = GC.WALKABLETILES;
         let sign = xOffset > 0 ? 1 : -1;
         for (let i = 1; i <= Math.abs(xOffset); i++) {
             if (!walkable.includes(this.relativeTileAt(i * sign, 0).type)) {
@@ -60,7 +60,7 @@ export class Player {
     private canMoveVertically(yOffset: number): boolean {
         if (yOffset == 0) return true;
 
-        let walkable = GameConfig.walkableTiles;
+        let walkable = GC.WALKABLETILES;
         let sign = yOffset > 0 ? 1 : -1;
         let xSteps = 0;
         let ySteps = 1;

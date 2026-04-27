@@ -12,5 +12,7 @@ export class TileComponent {
     @Input() tile!: Tile;
     @Input() id!: string;
     public gameState = inject(GameState);
-    
+    public constructor(){
+        console.log("CONSTRUCTING TILE");
+    }
 };

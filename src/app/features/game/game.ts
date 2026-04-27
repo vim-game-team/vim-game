@@ -15,7 +15,7 @@ import { UiManager } from './core/UiManager';
 export class GameComponent {
     onExecuteCommand = new Subject<void>();
     onWriteChar = new Subject<void>();
-
+    
     public gameState = inject(GameState);
     public inputRouter = inject(InputRouter);
     public uiManager = inject(UiManager);

@@ -8,6 +8,7 @@ export enum TileType {
     EMPTY = "empty",
     GROUND = "ground",
     WALL = "wall",
+    DANGER = "danger",
 }
 
 export enum Action {

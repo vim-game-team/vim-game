@@ -8,7 +8,6 @@ export class CmdUtils {
     public static player: Player;
 
     public static getCharType(char: string): CharType {
-        console.log("COMPARING VALUE: " + char);
         switch (true) {
             case char == " ": return CharType.WHITESPACE;
             case isAlphaNumeric(char): return CharType.ALPHANUM;
@@ -22,7 +21,6 @@ export class CmdUtils {
         while (curTileType == type) {
             offset++;
             curTileType = this.getCharType(this.player.relativeTileAt(offset, 0).value);
-            console.log("CURTYPE: " + curTileType);
         }
         
         return offset

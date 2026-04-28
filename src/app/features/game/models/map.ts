@@ -29,21 +29,16 @@ export class Map {
 
     private loadChunk(chunkX: number, chunkY: number, curPosX: number, curPosY: number) {
         let curChunkId = chunkX + "-" + chunkY;
-        console.log("checking chunk: " + curChunkId);
         if (chunks.has(curChunkId)) {
             let borderY, borderX: number;
             let chunkData = chunks.get(curChunkId)!;
             borderY = curPosY / GameConfig.chunkSize + min(chunkData.length, GameConfig.chunkSize);
 
-            console.log("found chunk: " + curChunkId);
-
             for (let y = 0; y < borderY; y++) {
                 borderX = curPosX / GameConfig.chunkSize + chunkData[y].length / 2;
 
                 for (let x = 0; x < borderX; x++) {
-
                     let curTileData = chunkData[y].substring(x * 2, x * 2 + 2);
-
                     this.tiles.update(t => {
                         t[y + chunkY * GameConfig.chunkSize][x + chunkX * GameConfig.chunkSize]
                             = new Tile(curTileData);
@@ -59,7 +54,7 @@ export class Map {
     }
 
     public deleteCharAt(posX: number, posY: number) {
-        if (this.tileAt(posX-1, posY).type != TileType.GROUND)
+        if (this.tileAt(posX - 1, posY).type != TileType.GROUND)
             return;
 
         let lineEnd = this.findLineEnd(posX, posY);
@@ -95,9 +90,8 @@ export class Map {
         do {
             offset++;
             curTile = this.tileAt(posX + offset, posY);
-            console.log("val: " + curTile.value);
         }
-        while (curTile.type == TileType.GROUND)
+        while (GameConfig.movableTiles.includes(curTile.type))
         return offset;
     }
 

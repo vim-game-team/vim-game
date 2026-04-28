@@ -13,8 +13,6 @@ import { UiManager } from './core/UiManager';
     templateUrl: "./game.html"
 })
 export class GameComponent {
-    onExecuteCommand = new Subject<void>();
-    onWriteChar = new Subject<void>();
     
     public gameState = inject(GameState);
     public inputRouter = inject(InputRouter);

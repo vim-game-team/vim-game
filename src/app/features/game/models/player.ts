@@ -1,13 +1,14 @@
-import { signal, effect } from "@angular/core";
+import { signal, effect, Inject, Injectable } from "@angular/core";
 import { max, min } from "../../../shared/utils";
 import { GC } from "../constants/game-config"
 import { Map } from "./map";
 import { TileType } from "./types";
 import { Tile } from "./tile";
+import { Pos } from "./pos";
 
+@Injectable({providedIn: "root"})
 export class Player {
-    public posX = 0;
-    public posY = 0;
+    public pos = signal<Pos>(new Pos());
     public map: Map;
 
     public constructor(map: Map) {
@@ -19,28 +20,28 @@ export class Player {
         if (!this.canMoveVertically(moveY) ||
             !this.canMoveHorizontally(moveX))
             return;
-        
+
         if (moveY != 0) {
             moveX = this.offsetToLineStart(0, moveY);
         }
 
-        this.posX += moveX;
-        this.posY += moveY;
+        this.pos().x += moveX;
+        this.pos().y += moveY;
 
         this.drawPlayer();
     }
 
     public curTile(): Tile {
-        return this.map.tileAt(this.posX, this.posY);
+        return this.map.tileAt(this.pos().x, this.pos().y);
     }
 
     public deleteChar() {
-        this.map.deleteCharAt(this.posX, this.posY);
+        this.map.deleteCharAt(this.pos().x, this.pos().y);
         this.move(-1, 0);
     }
 
     public writeChar(char: string) {
-        this.map.insertCharAt(this.posX, this.posY, char);
+        this.map.insertCharAt(this.pos().x, this.pos().y, char);
         this.move(1, 0);
     }
 
@@ -95,13 +96,13 @@ export class Player {
     }
 
     public relativeTileAt(x: number, y: number): Tile {
-        let tempTile = this.map.tileAt(this.posX + x, this.posY + y);
+        let tempTile = this.map.tileAt(this.pos().x + x, this.pos().y + y);
         return tempTile;
     }
 
     private drawPlayer() {
         document.getElementsByClassName("player")[0]?.classList.remove("player");
-        let curTileId = "tile-" + this.posX + "-" + this.posY;
+        let curTileId = "tile-" + this.pos().x + "-" + this.pos().y;
         let playerTile = document.getElementById(curTileId);
         playerTile?.classList.add("player");
     }

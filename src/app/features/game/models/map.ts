@@ -4,10 +4,12 @@ import { GC } from "../constants/game-config";
 import { chunks } from "../constants/map-data";
 import { min, max } from "../../../shared/utils";
 import { TileType } from "./types";
+import { Subject } from "rxjs";
 
 export class Map {
     public tiles = signal<Tile[][]>([]);
     private chunkLength: number;
+    onMap = new Subject<void>();
 
     public constructor(curPosX: number = 0, curPosY = 0) {
         let chunkDist = GC.chunkLoadDistance;
@@ -82,6 +84,7 @@ export class Map {
             t[posY] = row;
             return [...t];
         });
+        this.onMap.next();
     }
 
     public findLineEnd(posX: number, posY: number): number {

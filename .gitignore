@@ -30,7 +30,8 @@ yarn-error.log
 .history/*
 
 # Miscellaneous
-/.angular/cache
+.env
+.angular/
 .sass-cache/
 /connect.lock
 /coverage
@@ -39,6 +40,9 @@ testem.log
 /typings
 __screenshots__/
 
+.angular
+
 # System files
+
 .DS_Store
-Thumbs.db
+src/environments/environment.ts

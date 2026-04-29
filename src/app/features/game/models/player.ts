@@ -10,10 +10,9 @@ export class Player {
     public pos = signal<Pos>(new Pos());
     public map: Map;
 
-    public constructor(map: Map) {
-        this.map = map;
-        this.drawPlayer();
-    }
+  public constructor(map: Map) {
+    this.map = map;
+  }
 
     public move(moveX: number = 0, moveY: number = 0) {
         if (!this.canMoveVertically(moveY) ||
@@ -47,8 +46,8 @@ export class Player {
         this.move(1, 0);
     }
 
-    private canMoveHorizontally(xOffset: number): boolean {
-        if (xOffset == 0) return true;
+  private canMoveHorizontally(xOffset: number): boolean {
+    if (xOffset == 0) return true;
 
         let walkable = GC.WALKABLETILES;
         let sign = xOffset > 0 ? 1 : -1;
@@ -60,8 +59,8 @@ export class Player {
         return true;
     }
 
-    private canMoveVertically(yOffset: number): boolean {
-        if (yOffset == 0) return true;
+  private canMoveVertically(yOffset: number): boolean {
+    if (yOffset == 0) return true;
 
         let walkable = GC.WALKABLETILES;
         let sign = yOffset > 0 ? 1 : -1;
@@ -69,33 +68,31 @@ export class Player {
         let ySteps = 1;
         let curTile = this.relativeTileAt(0, ySteps * sign)
 
-        while (
-            ySteps < Math.abs(yOffset) &&
-            (walkable.includes(curTile.type) ||
-                curTile.type == TileType.EMPTY)
-        ) {
-            ySteps++;
-            curTile = this.relativeTileAt(0, ySteps * sign)
-        }
-
-        curTile = this.relativeTileAt(xSteps, ySteps * sign)
-        while (curTile!.type == TileType.EMPTY) {
-            xSteps--;
-            curTile = this.relativeTileAt(xSteps, ySteps * sign)
-        }
-        return walkable.includes(curTile.type);
+    while (
+      ySteps < Math.abs(yOffset) &&
+      (walkable.includes(curTile.type) || curTile.type == TileType.EMPTY)
+    ) {
+      ySteps++;
+      curTile = this.relativeTileAt(0, ySteps * sign);
     }
 
-    private offsetToLineStart(posX: number, posY: number): number {
-        let offset = 0;
-        let curTile = this.relativeTileAt((posX + offset), posY);
-
-        while (curTile!.type == TileType.EMPTY) {
-            offset--;
-            curTile = this.relativeTileAt((posX + offset), posY)
-        }
-        return offset;
+    curTile = this.relativeTileAt(xSteps, ySteps * sign);
+    while (curTile!.type == TileType.EMPTY) {
+      xSteps++;
+      curTile = this.relativeTileAt(xSteps, ySteps * sign);
     }
+    return walkable.includes(curTile.type);
+  }
+
+  private offsetToLineStart(posX: number, posY: number): number {
+    let offset = 0;
+    let curTile = this.relativeTileAt(posX + offset, posY);
+    while (curTile!.type == TileType.EMPTY) {
+      offset--;
+      curTile = this.relativeTileAt(posX + offset, posY);
+    }
+    return offset;
+  }
 
     public relativeTileAt(x: number, y: number): Tile {
         let tempTile = this.map.tileAt(this.pos().x + x, this.pos().y + y);

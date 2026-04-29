@@ -21,6 +21,8 @@ import { Pos } from "../../models/pos";
                 <tile-component id="tile-{{ xIndex }}-{{yIndex}}"
                 [tile]="gameState.map.tileAt(buffer()[(headY + yIndex) % maxTilesVer][(headX + xIndex) % maxTilesHor].x,
                 buffer()[(headY + yIndex) % maxTilesVer][(headX + xIndex) % maxTilesHor].y)" 
+              [x]="xIndex"
+              [y]="yIndex"
                 />
             }
         </div> 
@@ -37,11 +39,10 @@ export class MapComponent {
 
     public gameState = inject(GameState);
     public uiManager = inject(UiManager);
-
+    
     public chunkSize = GC.CHUNKSIZE;
     public maxTilesHor = this.uiManager.calcMaxTilesHor();
     public maxTilesVer = this.uiManager.calcMaxTilesVer();
-
 
     public constructor() {
         this.viewportX = this.gameState.player.pos().x;

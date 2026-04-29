@@ -3,16 +3,13 @@ import { GameState } from "../../services/game-state.service"
 import { TileComponent } from "../tile/tile.component";
 import { UiManager } from "../../core/UiManager";
 import { GC } from "../../constants/game-config";
-import { Tile } from "../../models/tile";
 import { max } from "../../../../shared/utils";
-import { Map } from "../../models/map";
-import { Subject } from "rxjs";
 import { Pos } from "../../models/pos";
-import { Player } from "../../models/player";
+
 
 @Component({
     selector: "map-component",
-    providers: [UiManager, GameState, Player],
+    providers: [UiManager, GameState],
     imports: [TileComponent],
     template: `
     <div class="map-container">
@@ -53,7 +50,7 @@ export class MapComponent {
         this.headY = this.viewportY % GC.CHUNKSIZE;
 
         effect(() => {
-            console.log("new pos:" + this.gameState.player.pos());
+            this.gameState.player.pos();
             this.updateViewport();
         });
 

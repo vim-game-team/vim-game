@@ -3,7 +3,7 @@ import { Map } from "../models/map";
 import { Player } from "../models/player";
 import { InputMode } from "../models/types";
 
-@Injectable({providedIn: "root"})
+@Injectable()
 export class GameState {
     public player: Player;
     public map: Map;

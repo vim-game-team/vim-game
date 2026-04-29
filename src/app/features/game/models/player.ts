@@ -1,4 +1,4 @@
-import { signal, effect, Inject, Injectable } from "@angular/core";
+import { signal } from "@angular/core";
 import { max, min } from "../../../shared/utils";
 import { GC } from "../constants/game-config"
 import { Map } from "./map";
@@ -6,7 +6,6 @@ import { TileType } from "./types";
 import { Tile } from "./tile";
 import { Pos } from "./pos";
 
-@Injectable({providedIn: "root"})
 export class Player {
     public pos = signal<Pos>(new Pos());
     public map: Map;
@@ -25,8 +24,11 @@ export class Player {
             moveX = this.offsetToLineStart(0, moveY);
         }
 
-        this.pos().x += moveX;
-        this.pos().y += moveY;
+        this.pos.update(p => {
+            p.x += moveX;
+            p.y += moveY;
+            return p;
+        });
 
         this.drawPlayer();
     }

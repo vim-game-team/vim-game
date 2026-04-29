@@ -1,4 +1,4 @@
-import { signal, Signal } from "@angular/core";
+import { Injectable, signal, Signal } from "@angular/core";
 import { Tile } from "./tile";
 import { GC } from "../constants/game-config";
 import { chunks } from "../constants/map-data";

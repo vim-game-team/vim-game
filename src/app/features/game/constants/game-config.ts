@@ -1,5 +1,7 @@
+import { Injectable } from "@angular/core";
 import { TileType } from "../models/types";
 
+@Injectable()
 export class GC {
     public static CHUNKSIZE: number = 24;
     public static VIEWPORTBUFF: number = 2;

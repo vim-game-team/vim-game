@@ -27,7 +27,7 @@ export class Player {
     this.pos.update(p => {
       p.x += moveX;
       p.y += moveY;
-      return new Pos([p.x, p.y]);
+      return new Pos(p.x, p.y);
     });
 
   }

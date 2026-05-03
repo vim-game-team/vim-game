@@ -1,6 +1,6 @@
 .tile{
-    width: 64px;
-    height: 64px;
+    width: 62px;
+    height: 62px;
     border: 1px solid black;
     display: grid;
     place-items: center;

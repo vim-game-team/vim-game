@@ -1,4 +1,4 @@
-import { Injectable, signal, Signal } from "@angular/core";
+import { signal, Signal } from "@angular/core";
 import { Tile } from "./tile";
 import { GC } from "../constants/game-config";
 import { chunks } from "../constants/map-data";
@@ -21,7 +21,7 @@ export class Map {
             .fill(false)
             .map(() => new Array(this.chunkLength * GC.CHUNKSIZE)
                 .fill(new Tile("L "))));
-        
+
         for (let chunkX = startChunkPosX; chunkX <= startChunkPosX + chunkDist; chunkX++) {
             for (let chunkY = startChunkPosY; chunkY <= startChunkPosY + chunkDist; chunkY++) {
                 this.loadChunk(chunkX, chunkY, curPosX, curPosY);
@@ -84,7 +84,6 @@ export class Map {
             t[posY] = row;
             return [...t];
         });
-        this.onMap.next();
     }
 
     public findLineEnd(posX: number, posY: number): number {

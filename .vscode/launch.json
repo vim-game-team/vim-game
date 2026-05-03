@@ -6,28 +6,29 @@
       "type": "chrome",
       "request": "launch",
       "url": "http://localhost:4200/#",
-      "webRoot": "/home/angelow/dev/projects/vim-game/vim-game"
+      "webRoot": "c:/users/angelo wang/dev/fhtw/projects/vim-game/vim-game"
     },
     {
       "name": "Attach Chrome",
       "type": "chrome",
       "request": "attach",
       "url": "http://localhost:4200/#",
-      "webRoot": "/home/angelow/dev/projects/vim-game/vim-game"
+      "webroot": "c:/users/angelo wang/dev/fhtw/projects/vim-game/vim-game"
     },
     {
       "name": "Launch Chrome (Test)",
       "type": "chrome",
       "request": "launch",
       "url": "http://localhost:9876/debug.html",
-      "webRoot": "/home/angelow/dev/projects/vim-game/vim-game"
+      "webroot": "c:/users/angelo wang/dev/fhtw/projects/vim-game/vim-game"
     },
     {
       "name": "Launch Chrome (E2E)",
       "type": "node",
       "request": "launch",
-      "program": "/home/angelow/dev/projects/vim-game/vim-game/node_modules/protractor/bin/protractor",
-      "args": ["/home/angelow/dev/projects/vim-game/vim-game/protractor.conf.js"]
+      "program": "c:/users/angelo wang/dev/fhtw/projects/vim-game/vim-game/node_modules/protractor/bin/protractor",
+      "protocol": "inspector",
+      "args":[ "c:/users/angelo wang/dev/fhtw/projects/vim-game/vim-game/protractor.conf.js"]
     }
   ]
 }

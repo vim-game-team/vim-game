@@ -30,7 +30,6 @@ export class Player {
       return new Pos([p.x, p.y]);
     });
 
-    this.drawPlayer();
   }
 
   public curTile(): Tile {

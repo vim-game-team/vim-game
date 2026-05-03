@@ -21,11 +21,10 @@ import { ViewportScroller } from "@angular/common";
     >
     @for(tileRow of buffer(); track $index; let yIndex = $index ) 
     {
-        <div id class="tile-row">
-            @for(tile of tileRow; track $index; let xIndex = $index )
+        <div class="tile-row">
+            @for(tile of tileRow; track tile.x-tile.y; let xIndex = $index )
             {   
                 <tile-component 
-                id="tile-{{buffStart.x  + headX() + xIndex }}-{{ buffStart.y + headY() + yIndex }}"
                 [x]="buffStart.x + headX() + xIndex"
                 [y]="buffStart.y + headY() + yIndex"
                 [tile]="logicalTileOf(xIndex, yIndex)"
@@ -53,10 +52,8 @@ export class MapComponent {
     public constructor() {
         this.vpStart = this.getVpStart();
         this.buffStart = this.getBuffStart();
-
         this.headX = signal<number>(this.vpStart.x);
         this.headY = signal<number>(this.vpStart.y);
-        console.log("HEAD: " + this.headX() + "-" + this.headY());
         this.maxTilesHor = this.uiManager.calcMaxTilesHor() + GC.VIEWPORTBUFF * 2;
         this.maxTilesVer = this.uiManager.calcMaxTilesVer() + GC.VIEWPORTBUFF * 2;
 
@@ -64,7 +61,6 @@ export class MapComponent {
             this.gameState.player.pos();
             this.updateViewport();
         });
-
         this.loadTiles();
     }
 
@@ -86,7 +82,6 @@ export class MapComponent {
             for (let y = 0; y < this.maxTilesVer; y++) {
                 tempBuff.push([]);
                 for (let x = 0; x < this.maxTilesHor; x++) {
-                    // console.log("load: " + (this.buffStart.x + x) + "-" + (this.buffStart.y + y));
                     tempBuff[y].push(new Pos([(this.buffStart.x + x), (this.buffStart.y + y)]));
                 }
             }
@@ -95,7 +90,6 @@ export class MapComponent {
     }
 
     private updateViewport() {
-        console.log("player: " + this.gameState.player.pos().x + "-" + this.gameState.player.pos().y)
         if (this.mustMoveViewport()) {
             console.log("MOVING VIEWPORT");
             this.moveViewportToPlayer();
@@ -118,20 +112,14 @@ export class MapComponent {
             ? 1
             : -1;
         for (let y = 0; y < Math.abs(offset); y++) {
-            console.log("headY: " + this.headY());
             index = sign == 1
                 ? (this.headY()) % this.maxTilesVer
                 : (this.headY() - 1) % this.maxTilesVer;
-            console.log("index: " + index);
-            if (index < 0)
-                return;
 
             this.buffer.update(b => {
                 let tempLine: Pos[] = [...b[index]];
-                // console.log("updated line: " + JSON.stringify(tempLine));
-                for (let i = 0; i < this.maxTilesHor; i++) {
-                    tempLine[i].y += (this.maxTilesVer - 1) * sign;
-                }
+                for (let i = 0; i < this.maxTilesHor; i++)
+                    tempLine[i].y += (this.maxTilesVer) * sign;
 
                 b[index] = tempLine;
                 return [...b];
@@ -139,6 +127,7 @@ export class MapComponent {
             this.headY.update(h => { return h + sign });
         }
     }
+
     private shiftHorizontallyBy(offset: number) {
         let index: number;
         let sign = offset > 0
@@ -169,7 +158,7 @@ export class MapComponent {
         const botLimit = (maxVisTilesVer / 2) - GC.VIEWPORTMOVETHRESHHOLD;
         const leftLimit = GC.VIEWPORTMOVETHRESHHOLD - (maxVisTilesHor / 2);
         const topLimit = GC.VIEWPORTMOVETHRESHHOLD - (maxVisTilesVer / 2);
-        
+
         let normPos = new Pos([
             relX + (maxVisTilesHor / -2),
             relY + (maxVisTilesVer / -2)
@@ -205,7 +194,6 @@ export class MapComponent {
     public mustMoveViewport() {
         let relativePos = this.getRelativePlayerPos();
         let offset = this.getViewportMoveOffsets(relativePos[0], relativePos[1]);
-        console.log("offset: " + offset[0] + "-" + offset[1]);
 
         return offset[0] != 0
             || offset[1] != 0;

@@ -1,10 +1,4 @@
-installieren:
-node
-nvm
-
 run:
-nvm use
-npm 
 ng serve
 
-
+DEBUG: einfach angelo fragen

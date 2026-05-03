@@ -21,7 +21,7 @@ export class Map {
             .fill(false)
             .map(() => new Array(this.chunkLength * GC.CHUNKSIZE)
                 .fill(new Tile("L "))));
-
+        
         for (let chunkX = startChunkPosX; chunkX <= startChunkPosX + chunkDist; chunkX++) {
             for (let chunkY = startChunkPosY; chunkY <= startChunkPosY + chunkDist; chunkY++) {
                 this.loadChunk(chunkX, chunkY, curPosX, curPosY);

@@ -20,11 +20,11 @@ export class TileComponent {
   public gameState = inject(GameState);
   
   public constructor() {
-    console.log("CONSTRUCTING TILE");
+    console.log("CONSTRUCTING TILE: " + this.x + "-" + this.y);
   }
 
   isPlayerHere(): boolean {
-    console.log("checking for player");
+    // console.log("checking for player");
     return this.gameState.player.pos().x === this.x && this.gameState.player.pos().y === this.y;
   }
 }

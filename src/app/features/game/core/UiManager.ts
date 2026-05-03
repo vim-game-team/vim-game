@@ -16,11 +16,11 @@ export class UiManager {
     }
 
     public calcMaxTilesVer() {
-        return window.innerHeight / GC.TILESIZE;
+        return Math.round(window.innerHeight / GC.TILESIZE);
     }
 
     public calcMaxTilesHor() {
-        return window.innerWidth / GC.TILESIZE;
+        return Math.round(window.innerWidth / GC.TILESIZE);
     }
 
     private getRenderedTiles() {

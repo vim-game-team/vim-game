@@ -12,16 +12,12 @@ import { Tile } from '../../models/tile';
   styleUrl: './tile.css',
 })
 export class TileComponent {
-  // @Input() x!: number;
-  // @Input() y!: number;
-  x = input.required<number>();
-  y = input.required<number>();
-
+  public x = input.required<number>();
+  public y = input.required<number>();
   public gameState = inject(GameState);
-  
-  public tile = computed(() => {
-    return this.gameState.map.tileAt(this.x(), this.y());
-  });
+  public tile = computed(() =>
+    this.gameState.map.tileAt(this.x(), this.y())
+  );
 
   public isPlayer = computed(() =>
     this.gameState.player.pos().x === this.x() &&

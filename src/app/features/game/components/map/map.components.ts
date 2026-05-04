@@ -5,7 +5,6 @@ import { UiManager } from "../../core/UiManager";
 import { GC } from "../../constants/game-config";
 import { max, min } from "../../../../shared/utils";
 import { Pos } from "../../models/pos";
-import { Tile } from "../../models/tile";
 
 
 @Component({
@@ -17,14 +16,14 @@ import { Tile } from "../../models/tile";
     [style.margin-top.px] ="gc.TILESIZE * -2"
     [style.margin-left.px] ="gc.TILESIZE * -2"
     >
-    @for(tileRow of buffer(); track $index; let yIndex = $index ) 
+    @for(y of rowIndices; track $index; let yIndex = $index ) 
     {
         <div class="tile-row">
-            @for(tile of tileRow; track $index; let xIndex = $index )
+            @for(x of colIndices; track $index; let xIndex = $index )
             {   
                 <tile-component 
-                [x]="buffStart().x + head().x + xIndex"
-                [y]="buffStart().y + head().y + yIndex"
+                [x]="tileStart().x + xIndex"
+                [y]="tileStart().y + yIndex"
                 />
             }
         </div> 
@@ -37,106 +36,39 @@ export class MapComponent {
     public uiManager = inject(UiManager);
     public gc = GC;
 
-    public buffer = signal<Pos[][]>([]);
-    public buffStart = signal(new Pos);
-    public head = signal(new Pos);
-    public vpStart: Pos;
-
+    public tileStart = signal(new Pos);
 
     public maxTilesHor: number;
     public maxTilesVer: number;
-    public tileSize = GC.TILESIZE;
+    public rowIndices: number[];
+    public colIndices: number[];
 
     public constructor() {
-        this.vpStart = this.getVpStart();
-        this.buffStart.set(this.getBuffStart());
-        this.head.set(this.getVpStart());
+        this.tileStart.set(this.getBuffStart());
         this.maxTilesHor = this.uiManager.calcMaxTilesHor() + GC.VIEWPORTBUFF * 2;
         this.maxTilesVer = this.uiManager.calcMaxTilesVer() + GC.VIEWPORTBUFF * 2;
+        this.rowIndices = Array.from({ length: this.maxTilesVer }, (_, i) => i);
+        this.colIndices = Array.from({ length: this.maxTilesHor }, (_, i) => i);
 
         effect(() => {
             this.gameState.player.pos();
             this.updateViewport();
         });
-        this.loadTiles();
     }
 
-    private loadTiles() {
-        this.buffer.update(b => {
-            let tempBuff = [...b];
-            for (let y = 0; y < this.maxTilesVer; y++) {
-                tempBuff.push([]);
-                for (let x = 0; x < this.maxTilesHor; x++) {
-                    tempBuff[y].push(new Pos((this.buffStart().x + x), (this.buffStart().y + y)));
-                }
-            }
-            return tempBuff;
-        });
-    }
 
     private updateViewport() {
-        if (this.mustMoveViewport()) {
-            console.log("MOVING VIEWPORT");
-            this.moveViewportToPlayer();
-        }
-    }
-
-    private moveViewportToPlayer() {
-        let relativePos = this.getRelativePlayerPos();
-        let viewportMove = this.getViewportMoveOffsets(relativePos[0], relativePos[1]);
-
-        this.shiftHorizontallyBy(viewportMove[0])
-        this.shiftVerticallyBy(viewportMove[1])
-        this.vpStart.x += viewportMove[0];
-        this.vpStart.y += viewportMove[1];
-        this.buffStart.update(b => {
-            let x = b.x + viewportMove[0];
-            let y = b.y + viewportMove[1];
-            return new Pos(x, y);
-        })
-    }
-
-    private shiftVerticallyBy(offset: number) {
-        let index: number;
-        let sign = offset >= 0
-            ? 1
-            : -1;
-
-        this.buffer.update(b => {
-            for (let y = 0; y < Math.abs(offset); y++) {
-                index = sign == 1
-                    ? this.head().y % this.maxTilesVer
-                    : (this.head().y - 1) % this.maxTilesVer;
-                let tempLine: Pos[] = [...b[index]];
-                for (let i = 0; i < this.maxTilesHor; i++)
-                    tempLine[i].y += (this.maxTilesVer) * sign;
-
-                b[index] = tempLine;
-                this.head.update(h => { return new Pos(h.x, h.y + sign) });
-            }
-            return [...b];
-        });
-    }
-
-    private shiftHorizontallyBy(offset: number) {
-        let index: number;
-        let sign = offset > 0
-            ? 1
-            : -1;
-        for (let x = 0; x < Math.abs(offset); x++) {
-            this.buffer.update(b => {
-                for (let i = 0; i < this.maxTilesVer; i++) {
-                    index = sign == 1
-                        ? this.head().x % this.maxTilesHor
-                        : (this.head().x - 1) % this.maxTilesHor;
-                    console.log("i: " + i);
-                    let tempLine: Pos[] = [...b[i]];
-                    tempLine[index].x += (this.maxTilesHor) * sign;
-                    b[i] = tempLine;
-                }
-                return [...b];
+        let cartPlayerPos = this.cartesianCoordsOf(this.gameState.player.pos());
+        let offset = this.getViewportMoveOffsets(cartPlayerPos[0], cartPlayerPos[1]);
+        console.log("offset: (" + offset[0] + ", " + offset[1] + ")" )
+        if (offset[0] != 0 ||
+            offset[1] != 0
+        ) {
+            this.tileStart.update(h => {
+                return new Pos(
+                    h.x + offset[0],
+                    h.y + offset[1])
             });
-            this.head.update(h => { return new Pos(h.x + sign, h.y) });
         }
     }
 
@@ -147,58 +79,43 @@ export class MapComponent {
         const botLimit = (maxVisTilesVer / 2) - GC.VIEWPORTMOVETHRESHHOLD;
         const leftLimit = GC.VIEWPORTMOVETHRESHHOLD - (maxVisTilesHor / 2);
         const topLimit = GC.VIEWPORTMOVETHRESHHOLD - (maxVisTilesVer / 2);
+        let vpStart = this.getVpStart();
 
-        let normPos = new Pos(
-            relX + (maxVisTilesHor / -2),
-            relY + (maxVisTilesVer / -2)
-        )
+        let moveX = relX > 0
+            ? Math.max(relX - rightLimit, 0)
+            : Math.min(relX - leftLimit, 0);
+        let moveY = relY > 0
+            ? Math.max(relY - botLimit, 0)
+            : Math.min(relY - topLimit, 0);
 
-        let moveX = normPos.x > 0
-            ? Math.max(normPos.x - rightLimit, 0)
-            : Math.min(normPos.x - leftLimit, 0);
-        let moveY = normPos.y > 0
-            ? Math.max(normPos.y - botLimit, 0)
-            : Math.min(normPos.y - topLimit, 0);
-        console.log("move: " + moveX + "-" + moveY);
-
-        moveX = this.vpStart.x + moveX < 0
-            ? 0
+        console.log("move: (" +moveX + ", " + moveY + ")" )
+        moveX = vpStart.x + moveX < 0
+            ? moveX - (vpStart.x + moveX)
             : moveX;
-        moveY = this.vpStart.y + moveY < 0
-            ? 0
+        moveY = vpStart.y + moveY < 0
+            ? moveY -(vpStart.y + moveY)
             : moveY;
-
-        console.log("cleaned: " + moveX + "-" + moveY);
 
         return [Math.round(moveX), Math.round(moveY)];
     }
 
-    public getRelativePlayerPos(): number[] {
-        let relativeX = this.gameState.player.pos().x - this.vpStart.x;
-        let relativeY = this.gameState.player.pos().y - this.vpStart.y;
+    public cartesianCoordsOf(pos: Pos): number[] {
+        let vpStart = this.getVpStart();
+        const maxVisTilesHor = this.maxTilesHor - (GC.VIEWPORTBUFF * 2);
+        const maxVisTilesVer = this.maxTilesVer - (GC.VIEWPORTBUFF * 2);
+        let relativeX = pos.x - vpStart.x + (maxVisTilesHor / -2);
+        let relativeY = pos.y - vpStart.y + (maxVisTilesVer / -2);
 
         return [relativeX, relativeY];
     }
 
-    private mustMoveViewport() {
-        let relativePos = this.getRelativePlayerPos();
-        let offset = this.getViewportMoveOffsets(relativePos[0], relativePos[1]);
-
-        return offset[0] != 0
-            || offset[1] != 0;
-    }
-
     private getVpStart(): Pos {
-        let startX = max(
-            this.gameState.player.pos().x - (this.maxTilesHor / 2),
-            0
-        );
-        let startY = max(
-            this.gameState.player.pos().y - (this.maxTilesVer / 2),
-            0
-        );
+        let startX = this.tileStart().x + GC.VIEWPORTBUFF;
+        let startY = this.tileStart().y + GC.VIEWPORTBUFF;
+
         return new Pos(startX, startY);
     }
+
     private getBuffStart() {
         let startX = max(
             this.gameState.player.pos().x - (this.maxTilesHor / 2),
@@ -210,6 +127,7 @@ export class MapComponent {
         );
         startX -= GC.VIEWPORTBUFF;
         startY -= GC.VIEWPORTBUFF;
+
         return new Pos(startX, startY);
     }
 };

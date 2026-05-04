@@ -1,7 +1,7 @@
 # Code Conventions
 ## General
 - Language
-  - English (always)
+  - English (except for code reviews)
 - Naming
     - Files/Variables/Functions/etc.: camelCase 
     - SQL Tables & Attributes: snake_case

@@ -1,4 +1,4 @@
 run:
 ng serve
 
-DEBUG: einfach angelo fragen
+Debugging: https://stackoverflow.com/questions/42495655/how-to-debug-angular-with-vscode

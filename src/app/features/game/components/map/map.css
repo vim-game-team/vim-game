@@ -3,7 +3,13 @@
     flex-direction: row
 }
 .map-container{
+    position: relative;
     display: flex;
     flex-direction: column;
+    width: 100vw;
+    height: 100vh;
     overflow: hidden;
+}
+.vp{
+    transition: transform 70ms ease-out;
 }

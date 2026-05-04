@@ -1,4 +1,5 @@
 .tile{
+    position: absolute;
     width: 62px;
     height: 62px;
     border: 1px solid black;

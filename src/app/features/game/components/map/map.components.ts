@@ -1,4 +1,4 @@
-import { Component, inject, effect, signal, Injectable, Signal } from "@angular/core";
+import { Component, inject, effect, signal, Injectable, Signal, WritableSignal } from "@angular/core";
 import { GameState } from "../../services/game-state.service"
 import { TileComponent } from "../tile/tile.component";
 import { UiManager } from "../../core/UiManager";
@@ -12,23 +12,30 @@ import { Tile } from "../../models/tile";
     selector: "map-component",
     imports: [TileComponent],
     template: `
+     <div
+    class="map-container">
     <div 
-    class="map-container"
-    [style.margin-top.px] ="gc.TILESIZE * -2"
-    [style.margin-left.px] ="gc.TILESIZE * -2"
+    class="vp"
+    [style.margin-left.px]="gc.TILESIZE * -gc.VIEWPORTBUFF"
+    [style.margin-top.px]="gc.TILESIZE * -gc.VIEWPORTBUFF"
+    [style.transform]= "'translate(' 
+    + ( buffStart().x * gc.TILESIZE * -1 ) + 'px,' 
+    + ( buffStart().y * gc.TILESIZE * -1) + 'px)'"
     >
-    @for(tileRow of buffer(); track $index; let yIndex = $index ) 
+    @for(tileRow of buffer; track $index; let yIndex = $index ) 
     {
         <div class="tile-row">
             @for(tile of tileRow; track $index; let xIndex = $index )
             {   
                 <tile-component 
-                [x]="buffStart().x + head().x + xIndex"
-                [y]="buffStart().y + head().y + yIndex"
+                [x]="tile().x"
+                [y]="tile().y"
                 />
             }
         </div> 
     }
+</div>
+    </div>
     `,
     styleUrl: "./map.css"
 })
@@ -37,11 +44,10 @@ export class MapComponent {
     public uiManager = inject(UiManager);
     public gc = GC;
 
-    public buffer = signal<Pos[][]>([]);
+    public buffer: WritableSignal<Pos>[][] = [[]];
     public buffStart = signal(new Pos);
     public head = signal(new Pos);
     public vpStart: Pos;
-
 
     public maxTilesHor: number;
     public maxTilesVer: number;
@@ -58,25 +64,22 @@ export class MapComponent {
             this.gameState.player.pos();
             this.updateViewport();
         });
+
         this.loadTiles();
     }
 
     private loadTiles() {
-        this.buffer.update(b => {
-            let tempBuff = [...b];
-            for (let y = 0; y < this.maxTilesVer; y++) {
-                tempBuff.push([]);
-                for (let x = 0; x < this.maxTilesHor; x++) {
-                    tempBuff[y].push(new Pos((this.buffStart().x + x), (this.buffStart().y + y)));
-                }
+        for (let y = 0; y < this.maxTilesVer; y++) {
+            this.buffer.push([]);
+            for (let x = 0; x < this.maxTilesHor; x++) {
+                let tilePos = new Pos(this.buffStart().x + x, this.buffStart().y + y)
+                this.buffer[y].push(signal(tilePos));
             }
-            return tempBuff;
-        });
+        }
     }
 
     private updateViewport() {
         if (this.mustMoveViewport()) {
-            console.log("MOVING VIEWPORT");
             this.moveViewportToPlayer();
         }
     }
@@ -102,20 +105,17 @@ export class MapComponent {
             ? 1
             : -1;
 
-        this.buffer.update(b => {
-            for (let y = 0; y < Math.abs(offset); y++) {
-                index = sign == 1
-                    ? this.head().y % this.maxTilesVer
-                    : (this.head().y - 1) % this.maxTilesVer;
-                let tempLine: Pos[] = [...b[index]];
-                for (let i = 0; i < this.maxTilesHor; i++)
-                    tempLine[i].y += (this.maxTilesVer) * sign;
-
-                b[index] = tempLine;
-                this.head.update(h => { return new Pos(h.x, h.y + sign) });
+        for (let y = 0; y < Math.abs(offset); y++) {
+            index = sign == 1
+                ? this.head().y + y % this.maxTilesVer
+                : (this.head().y + y - 1) % this.maxTilesVer;
+            for (let x = 0; x < this.maxTilesHor; x++) {
+                this.buffer[index][x].update((b) => {
+                    return new Pos(b.x, b.y + this.maxTilesVer * sign);
+                });
             }
-            return [...b];
-        });
+        }
+        this.head.update(h => { return new Pos(h.x, h.y + offset) });
     }
 
     private shiftHorizontallyBy(offset: number) {
@@ -123,21 +123,17 @@ export class MapComponent {
         let sign = offset > 0
             ? 1
             : -1;
-        for (let x = 0; x < Math.abs(offset); x++) {
-            this.buffer.update(b => {
-                for (let i = 0; i < this.maxTilesVer; i++) {
-                    index = sign == 1
-                        ? this.head().x % this.maxTilesHor
-                        : (this.head().x - 1) % this.maxTilesHor;
-                    console.log("i: " + i);
-                    let tempLine: Pos[] = [...b[i]];
-                    tempLine[index].x += (this.maxTilesHor) * sign;
-                    b[i] = tempLine;
-                }
-                return [...b];
-            });
-            this.head.update(h => { return new Pos(h.x + sign, h.y) });
+        for (let x = 0; Math.abs(x) < Math.abs(offset); x += sign) {
+            index = sign == 1
+                ? this.head().x + x % this.maxTilesHor
+                : (this.head().x + x - 1) % this.maxTilesHor;
+            for (let y = 0; y < this.maxTilesVer; y++) {
+                this.buffer[y][index].update((b) => {
+                    return new Pos(b.x + this.maxTilesHor * sign, b.y);
+                });
+            }
         }
+        this.head.update(h => { return new Pos(h.x + offset, h.y) });
     }
 
     private getViewportMoveOffsets(relX: number, relY: number): number[] {
@@ -162,10 +158,10 @@ export class MapComponent {
         console.log("move: " + moveX + "-" + moveY);
 
         moveX = this.vpStart.x + moveX < 0
-            ? 0
+            ? moveX - (this.vpStart.x + moveX)
             : moveX;
         moveY = this.vpStart.y + moveY < 0
-            ? 0
+            ? moveY - (this.vpStart.y + moveY)
             : moveY;
 
         console.log("cleaned: " + moveX + "-" + moveY);

@@ -60,7 +60,7 @@ export class MapComponent {
     private updateViewport() {
         let cartPlayerPos = this.cartesianCoordsOf(this.gameState.player.pos());
         let offset = this.getViewportMoveOffsets(cartPlayerPos[0], cartPlayerPos[1]);
-        console.log("offset: (" + offset[0] + ", " + offset[1] + ")" )
+        
         if (offset[0] != 0 ||
             offset[1] != 0
         ) {
@@ -88,7 +88,6 @@ export class MapComponent {
             ? Math.max(relY - botLimit, 0)
             : Math.min(relY - topLimit, 0);
 
-        console.log("move: (" +moveX + ", " + moveY + ")" )
         moveX = vpStart.x + moveX < 0
             ? moveX - (vpStart.x + moveX)
             : moveX;

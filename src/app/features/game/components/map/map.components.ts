@@ -13,8 +13,8 @@ import { Pos } from "../../models/pos";
     template: `
     <div 
     class="map-container"
-    [style.margin-top.px] ="gc.TILESIZE * -2"
-    [style.margin-left.px] ="gc.TILESIZE * -2"
+    [style.margin-top.px] ="gc.TILE_SIZE * -2"
+    [style.margin-left.px] ="gc.TILE_SIZE * -2"
     >
     @for(y of rowIndices; track $index; let yIndex = $index ) 
     {
@@ -45,8 +45,8 @@ export class MapComponent {
 
     public constructor() {
         this.tileStart.set(this.getBuffStart());
-        this.maxTilesHor = this.uiManager.calcMaxTilesHor() + GC.VIEWPORTBUFF * 2;
-        this.maxTilesVer = this.uiManager.calcMaxTilesVer() + GC.VIEWPORTBUFF * 2;
+        this.maxTilesHor = this.uiManager.calcMaxTilesHor() + GC.VP_BUFF * 2;
+        this.maxTilesVer = this.uiManager.calcMaxTilesVer() + GC.VP_BUFF * 2;
         this.rowIndices = Array.from({ length: this.maxTilesVer }, (_, i) => i);
         this.colIndices = Array.from({ length: this.maxTilesHor }, (_, i) => i);
 
@@ -73,12 +73,12 @@ export class MapComponent {
     }
 
     private getViewportMoveOffsets(relX: number, relY: number): number[] {
-        const maxVisTilesHor = this.maxTilesHor - (GC.VIEWPORTBUFF * 2);
-        const maxVisTilesVer = this.maxTilesVer - (GC.VIEWPORTBUFF * 2);
-        const rightLimit = (maxVisTilesHor / 2) - GC.VIEWPORTMOVETHRESHHOLD;
-        const botLimit = (maxVisTilesVer / 2) - GC.VIEWPORTMOVETHRESHHOLD;
-        const leftLimit = GC.VIEWPORTMOVETHRESHHOLD - (maxVisTilesHor / 2);
-        const topLimit = GC.VIEWPORTMOVETHRESHHOLD - (maxVisTilesVer / 2);
+        const maxVisTilesHor = this.maxTilesHor - (GC.VP_BUFF * 2);
+        const maxVisTilesVer = this.maxTilesVer - (GC.VP_BUFF * 2);
+        const rightLimit = (maxVisTilesHor / 2) - GC.VP_MOVE_THRESHHOLD;
+        const botLimit = (maxVisTilesVer / 2) - GC.VP_MOVE_THRESHHOLD;
+        const leftLimit = GC.VP_MOVE_THRESHHOLD - (maxVisTilesHor / 2);
+        const topLimit = GC.VP_MOVE_THRESHHOLD - (maxVisTilesVer / 2);
         let vpStart = this.getVpStart();
 
         let moveX = relX > 0
@@ -100,8 +100,8 @@ export class MapComponent {
 
     public cartesianCoordsOf(pos: Pos): number[] {
         let vpStart = this.getVpStart();
-        const maxVisTilesHor = this.maxTilesHor - (GC.VIEWPORTBUFF * 2);
-        const maxVisTilesVer = this.maxTilesVer - (GC.VIEWPORTBUFF * 2);
+        const maxVisTilesHor = this.maxTilesHor - (GC.VP_BUFF * 2);
+        const maxVisTilesVer = this.maxTilesVer - (GC.VP_BUFF * 2);
         let relativeX = pos.x - vpStart.x + (maxVisTilesHor / -2);
         let relativeY = pos.y - vpStart.y + (maxVisTilesVer / -2);
 
@@ -109,8 +109,8 @@ export class MapComponent {
     }
 
     private getVpStart(): Pos {
-        let startX = this.tileStart().x + GC.VIEWPORTBUFF;
-        let startY = this.tileStart().y + GC.VIEWPORTBUFF;
+        let startX = this.tileStart().x + GC.VP_BUFF;
+        let startY = this.tileStart().y + GC.VP_BUFF;
 
         return new Pos(startX, startY);
     }
@@ -124,8 +124,8 @@ export class MapComponent {
             this.gameState.player.pos().y - (this.maxTilesVer / 2),
             0
         );
-        startX -= GC.VIEWPORTBUFF;
-        startY -= GC.VIEWPORTBUFF;
+        startX -= GC.VP_BUFF;
+        startY -= GC.VP_BUFF;
 
         return new Pos(startX, startY);
     }

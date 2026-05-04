@@ -49,7 +49,7 @@ export class Player {
   private canMoveHorizontally(xOffset: number): boolean {
     if (xOffset == 0) return true;
 
-    let walkable = GC.WALKABLETILES;
+    let walkable = GC.WALKABLE_TILES;
     let sign = xOffset > 0 ? 1 : -1;
     for (let i = 1; i <= Math.abs(xOffset); i++) {
       if (!walkable.includes(this.relativeTileAt(i * sign, 0).type)) {
@@ -62,7 +62,7 @@ export class Player {
   private canMoveVertically(yOffset: number): boolean {
     if (yOffset == 0) return true;
 
-    let walkable = GC.WALKABLETILES;
+    let walkable = GC.WALKABLE_TILES;
     let sign = yOffset > 0 ? 1 : -1;
     let xSteps = 0;
     let ySteps = 0;

@@ -12,14 +12,14 @@ export class Map {
     onMap = new Subject<void>();
 
     public constructor(curPosX: number = 0, curPosY = 0) {
-        let chunkDist = GC.chunkLoadDistance;
-        let startChunkPosX = max(curPosX / GC.CHUNKSIZE - chunkDist, 0);
-        let startChunkPosY = max(curPosY / GC.CHUNKSIZE - chunkDist, 0);
+        let chunkDist = GC.CHUNK_LOAD_DIST;
+        let startChunkPosX = max(curPosX / GC.CHUNK_SIZE - chunkDist, 0);
+        let startChunkPosY = max(curPosY / GC.CHUNK_SIZE - chunkDist, 0);
 
         this.chunkLength = (chunkDist * 2) + 1;
-        this.tiles = signal(new Array(this.chunkLength * GC.CHUNKSIZE)
+        this.tiles = signal(new Array(this.chunkLength * GC.CHUNK_SIZE)
             .fill(false)
-            .map(() => new Array(this.chunkLength * GC.CHUNKSIZE)
+            .map(() => new Array(this.chunkLength * GC.CHUNK_SIZE)
                 .fill(new Tile("L "))));
 
         for (let chunkX = startChunkPosX; chunkX <= startChunkPosX + chunkDist; chunkX++) {
@@ -34,15 +34,15 @@ export class Map {
         if (chunks.has(curChunkId)) {
             let borderY, borderX: number;
             let chunkData = chunks.get(curChunkId)!;
-            borderY = curPosY / GC.CHUNKSIZE + min(chunkData.length, GC.CHUNKSIZE);
+            borderY = curPosY / GC.CHUNK_SIZE + min(chunkData.length, GC.CHUNK_SIZE);
 
             for (let y = 0; y < borderY; y++) {
-                borderX = curPosX / GC.CHUNKSIZE + chunkData[y].length / 2;
+                borderX = curPosX / GC.CHUNK_SIZE + chunkData[y].length / 2;
 
                 for (let x = 0; x < borderX; x++) {
                     let curTileData = chunkData[y].substring(x * 2, x * 2 + 2);
                     this.tiles.update(t => {
-                        t[y + chunkY * GC.CHUNKSIZE][x + chunkX * GC.CHUNKSIZE]
+                        t[y + chunkY * GC.CHUNK_SIZE][x + chunkX * GC.CHUNK_SIZE]
                             = new Tile(curTileData);
                         return [...t];
                     });
@@ -93,7 +93,7 @@ export class Map {
             offset++;
             curTile = this.tileAt(posX + offset, posY);
         }
-        while (GC.movableTiles.includes(curTile.type))
+        while (GC.MOVABLE_TILES.includes(curTile.type))
         return offset;
     }
 

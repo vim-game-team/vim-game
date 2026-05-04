@@ -3,12 +3,12 @@ import { TileType } from "../models/types";
 
 @Injectable()
 export class GC {
-    public static CHUNKSIZE: number = 24;
-    public static VIEWPORTBUFF: number = 2;
-    public static WALKABLETILES = [TileType.GROUND, TileType.DANGER];
-    public static TILESIZE = 64;
-    public static VIEWPORTMOVETHRESHHOLD = 4;
-    public static chunkLoadDistance: number = 1;
-    public static movableTiles = [TileType.GROUND, TileType.DANGER];
-    public static immovableTiles = [TileType.WALL];
+    public static CHUNK_SIZE: number = 24;
+    public static TILE_SIZE = 64;
+    public static VP_BUFF: number = 2;
+    public static VP_MOVE_THRESHHOLD = 4;
+    public static WALKABLE_TILES = [TileType.GROUND, TileType.DANGER];
+    public static CHUNK_LOAD_DIST: number = 1;
+    public static MOVABLE_TILES = [TileType.GROUND, TileType.DANGER];
+    public static IMMMOVABLE_TILES = [TileType.WALL];
 }

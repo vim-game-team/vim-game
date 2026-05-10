@@ -1,6 +1,7 @@
 // Vorlage für environment.ts - diese Datei ist nur ein Beispiel.
 // Erstelle eine eigene environment.ts mit deinen Firebase-Werten.
 // WICHTIG: environment.ts niemals committen (steht in .gitignore)🫀
+/*
 export const environment = {
   production: false,
   firebase: {
@@ -12,3 +13,4 @@ export const environment = {
     appId: 'NG_APP_FIREBASE_APP_ID',
   }
 };
+*/

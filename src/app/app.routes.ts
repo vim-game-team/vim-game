@@ -5,6 +5,7 @@ import { Register } from './features/register/register';
 import { Profile } from './features/profile/profile';
 import { Commands } from './features/commands/commands';
 import { Intro } from './features/intro/intro';
+import { NotFound } from './not-found/not-found';
 
 export const routes: Routes = [
     { path: "", component: GameComponent },
@@ -12,6 +13,7 @@ export const routes: Routes = [
     { path: "register", component: Register },
     { path: "profile", component: Profile },
     { path: "commands", component: Commands },
-    { path: "intro", component: Intro }
+    { path: "intro", component: Intro },
+    { path: "**", component: NotFound }
 
 ];

@@ -1,0 +1,13 @@
+h1 {
+    text-align: center;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    width: 350px;
+    gap: 16px;
+}
+.error{
+    color:red;
+}

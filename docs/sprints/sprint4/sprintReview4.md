@@ -29,8 +29,8 @@
 
 | Req ID    | Short Description       | Estimate [h] | Real Effort [h] | Delta [h] | Passed | Failed | Remarks                                          |
 |-----------|-------------------------|:------------:|:---------------:|:---------:|:------:|:------:|--------------------------------------------------|
-| #         |                         |      -       |        -        |     -     |   -    |   -    |                                                  |
-| #         |                         |      -       |        -        |     -     |   -    |   -    |                                                  |
+| #27       |Login – Formular         |      2       |        2        |     0     |   ✔    |   -    | used @angular/material                           |
+| #28       | Login-Firebase-Auth     |      2       |        3        |     -1    |   ✔    |   -    | standard + google-authentification               |
 | #         |                         |      -       |        -        |     -     |   -    |   -    |                                                  |
 | #         |                         |      -       |        -        |     -     |   -    |   -    |                                                  |
 | #         |                         |      -       |        -        |     -     |   -    |   -    |                                                  |

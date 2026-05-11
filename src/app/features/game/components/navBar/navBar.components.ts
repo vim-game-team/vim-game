@@ -5,15 +5,9 @@ import { RouterLink } from '@angular/router';
   selector: 'nav-bar',
   standalone: true,
   imports: [RouterLink],
-  template: `
-    <nav class="navbar">
-      <a routerLink="/">Startseite</a>
-      <a routerLink="/commands">Commands</a>
-      <a routerLink="/profile">Profil</a>
-      <a routerLink="/login">Login</a>
-      <a routerLink="/register">Register</a>
-    </nav>
-  `,
+  templateUrl: './navBar.html',
   styleUrl: './navBar.css'
 })
-export class NavBarComponent {}
+export class NavBarComponent {
+  isLoggedIn = false; // This should be replaced with actual authentication logic
+}

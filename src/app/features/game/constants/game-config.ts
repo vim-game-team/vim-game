@@ -5,10 +5,7 @@ import { TileType } from "../models/types";
 export class GC {
     public static CHUNK_SIZE: number = 24;
     public static TILE_SIZE = 64;
-    public static VP_BUFF: number = 2;
+    public static VP_BUFF: number = 2;  
     public static VP_MOVE_THRESHHOLD = 4;
-    public static WALKABLE_TILES = [TileType.GROUND, TileType.DANGER];
     public static CHUNK_LOAD_DIST: number = 1;
-    public static MOVABLE_TILES = [TileType.GROUND, TileType.DANGER];
-    public static IMMMOVABLE_TILES = [TileType.WALL];
 }

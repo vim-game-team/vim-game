@@ -49,10 +49,9 @@ export class Player {
   private canMoveHorizontally(xOffset: number): boolean {
     if (xOffset == 0) return true;
 
-    let walkable = GC.WALKABLE_TILES;
     let sign = xOffset > 0 ? 1 : -1;
     for (let i = 1; i <= Math.abs(xOffset); i++) {
-      if (!walkable.includes(this.relativeTileAt(i * sign, 0).type)) {
+      if (!this.relativeTileAt(i * sign, 0).type.isWalkable) {
         return false;
       }
     }
@@ -62,15 +61,13 @@ export class Player {
   private canMoveVertically(yOffset: number): boolean {
     if (yOffset == 0) return true;
 
-    let walkable = GC.WALKABLE_TILES;
     let sign = yOffset > 0 ? 1 : -1;
     let xSteps = 0;
     let ySteps = 0;
-      
+
     let curTile = this.relativeTileAt(0, ySteps * sign)
-    while (
-      ySteps < Math.abs(yOffset) &&
-      (walkable.includes(curTile.type) || curTile.type == TileType.EMPTY)
+    while (ySteps < Math.abs(yOffset)
+      && (curTile.type.isWalkable || curTile.type == TileType.EMPTY)
     ) {
       ySteps++;
       curTile = this.relativeTileAt(0, ySteps * sign);
@@ -81,7 +78,7 @@ export class Player {
       xSteps--;
       curTile = this.relativeTileAt(xSteps, ySteps * sign);
     }
-    return walkable.includes(curTile.type);
+    return curTile.type.isWalkable;
   }
 
   private offsetToLineStart(posX: number, posY: number): number {

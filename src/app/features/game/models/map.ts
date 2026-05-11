@@ -93,7 +93,7 @@ export class Map {
             offset++;
             curTile = this.tileAt(posX + offset, posY);
         }
-        while (GC.MOVABLE_TILES.includes(curTile.type))
+        while (!curTile.type.isStatic)
         return offset;
     }
 

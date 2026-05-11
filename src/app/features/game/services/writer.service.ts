@@ -1,5 +1,5 @@
-import { InputMode } from "../../models/types";
-import { GameState } from "../game-state.service";
+import { InputMode } from "../models/types";
+import { GameState } from "./game-state.service";
 
 export class WriterService {
     public gameState: GameState;
@@ -10,12 +10,12 @@ export class WriterService {
 
     public write(input: string) {
         switch (input) {
-            case "Backspace": {
-                this.gameState.player.deleteChar();
-                break;
-            }
             case "Escape": {
                 this.gameState.inputMode = InputMode.VIM;
+                break;
+            }
+            case "Backspace": {
+                this.gameState.player.deleteChar();
                 break;
             }
             default: {

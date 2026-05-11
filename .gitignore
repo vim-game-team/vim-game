@@ -23,14 +23,13 @@ yarn-error.log
 # Visual Studio Code
 .vscode/*
 !.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
 !.vscode/extensions.json
 !.vscode/mcp.json
 .history/*
 
 # Miscellaneous
-/.angular/cache
+.env
+.angular/
 .sass-cache/
 /connect.lock
 /coverage
@@ -39,6 +38,9 @@ testem.log
 /typings
 __screenshots__/
 
+.angular
+
 # System files
+
 .DS_Store
-Thumbs.db
+src/environments/environment.ts

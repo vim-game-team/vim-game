@@ -1,23 +1,25 @@
 import { signal, Signal } from "@angular/core";
 import { Tile } from "./tile";
-import { GameConfig } from "../constants/game-config";
+import { GC } from "../constants/game-config";
 import { chunks } from "../constants/map-data";
 import { min, max } from "../../../shared/utils";
 import { TileType } from "./types";
+import { Subject } from "rxjs";
 
 export class Map {
     public tiles = signal<Tile[][]>([]);
     private chunkLength: number;
+    onMap = new Subject<void>();
 
     public constructor(curPosX: number = 0, curPosY = 0) {
-        let chunkDist = GameConfig.chunkLoadDistance;
-        let startChunkPosX = max(curPosX / GameConfig.chunkSize - chunkDist, 0);
-        let startChunkPosY = max(curPosY / GameConfig.chunkSize - chunkDist, 0);
+        let chunkDist = GC.CHUNK_LOAD_DIST;
+        let startChunkPosX = max(curPosX / GC.CHUNK_SIZE - chunkDist, 0);
+        let startChunkPosY = max(curPosY / GC.CHUNK_SIZE - chunkDist, 0);
 
         this.chunkLength = (chunkDist * 2) + 1;
-        this.tiles = signal(new Array(this.chunkLength * GameConfig.chunkSize)
+        this.tiles = signal(new Array(this.chunkLength * GC.CHUNK_SIZE)
             .fill(false)
-            .map(() => new Array(this.chunkLength * GameConfig.chunkSize)
+            .map(() => new Array(this.chunkLength * GC.CHUNK_SIZE)
                 .fill(new Tile("L "))));
 
         for (let chunkX = startChunkPosX; chunkX <= startChunkPosX + chunkDist; chunkX++) {
@@ -32,15 +34,15 @@ export class Map {
         if (chunks.has(curChunkId)) {
             let borderY, borderX: number;
             let chunkData = chunks.get(curChunkId)!;
-            borderY = curPosY / GameConfig.chunkSize + min(chunkData.length, GameConfig.chunkSize);
+            borderY = curPosY / GC.CHUNK_SIZE + min(chunkData.length, GC.CHUNK_SIZE);
 
             for (let y = 0; y < borderY; y++) {
-                borderX = curPosX / GameConfig.chunkSize + chunkData[y].length / 2;
+                borderX = curPosX / GC.CHUNK_SIZE + chunkData[y].length / 2;
 
                 for (let x = 0; x < borderX; x++) {
                     let curTileData = chunkData[y].substring(x * 2, x * 2 + 2);
                     this.tiles.update(t => {
-                        t[y + chunkY * GameConfig.chunkSize][x + chunkX * GameConfig.chunkSize]
+                        t[y + chunkY * GC.CHUNK_SIZE][x + chunkX * GC.CHUNK_SIZE]
                             = new Tile(curTileData);
                         return [...t];
                     });
@@ -91,7 +93,7 @@ export class Map {
             offset++;
             curTile = this.tileAt(posX + offset, posY);
         }
-        while (GameConfig.movableTiles.includes(curTile.type))
+        while (GC.MOVABLE_TILES.includes(curTile.type))
         return offset;
     }
 

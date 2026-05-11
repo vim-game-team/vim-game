@@ -17,7 +17,6 @@ export class CmdUtils {
 
     public static offsetToNextNonCharType(type: CharType, offset = 0) {
         let curTileType = this.getCharType(this.player.relativeTileAt(offset, 0).value);
-
         while (curTileType == type) {
             offset++;
             curTileType = this.getCharType(this.player.relativeTileAt(offset, 0).value);

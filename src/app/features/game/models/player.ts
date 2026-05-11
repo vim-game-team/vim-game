@@ -1,13 +1,14 @@
-import { signal, effect } from '@angular/core';
-import { max, min } from '../../../shared/utils';
-import { GameConfig } from '../constants/game-config';
-import { Map } from './map';
-import { TileType } from './types';
-import { Tile } from './tile';
+import { effect, signal } from "@angular/core";
+import { max, min } from "../../../shared/utils";
+import { GC } from "../constants/game-config"
+import { Map } from "./map";
+import { TileType } from "./types";
+import { Tile } from "./tile";
+import { Pos } from "./pos";
+
 
 export class Player {
-  public posX = signal(0);
-  public posY = signal(0);
+  public pos = signal(new Pos());
   public map: Map;
 
   public constructor(map: Map) {
@@ -15,34 +16,40 @@ export class Player {
   }
 
   public move(moveX: number = 0, moveY: number = 0) {
-    if (!this.canMoveVertically(moveY) || !this.canMoveHorizontally(moveX)) return;
+    if (!this.canMoveVertically(moveY) ||
+      !this.canMoveHorizontally(moveX))
+      return;
 
     if (moveY != 0) {
       moveX = this.offsetToLineStart(0, moveY);
     }
 
-    this.posX.update((v) => v + moveX);
-    this.posY.update((v) => v + moveY);
+    this.pos.update(p => {
+      p.x += moveX;
+      p.y += moveY;
+      return new Pos(p.x, p.y);
+    });
+
   }
 
   public curTile(): Tile {
-    return this.map.tileAt(this.posX(), this.posY());
+    return this.map.tileAt(this.pos().x, this.pos().y);
   }
 
   public deleteChar() {
-    this.map.deleteCharAt(this.posX(), this.posY());
+    this.map.deleteCharAt(this.pos().x, this.pos().y);
     this.move(-1, 0);
   }
 
   public writeChar(char: string) {
-    this.map.insertCharAt(this.posX(), this.posY(), char);
+    this.map.insertCharAt(this.pos().x, this.pos().y, char);
     this.move(1, 0);
   }
 
   private canMoveHorizontally(xOffset: number): boolean {
     if (xOffset == 0) return true;
 
-    let walkable = GameConfig.walkableTiles;
+    let walkable = GC.WALKABLE_TILES;
     let sign = xOffset > 0 ? 1 : -1;
     for (let i = 1; i <= Math.abs(xOffset); i++) {
       if (!walkable.includes(this.relativeTileAt(i * sign, 0).type)) {
@@ -55,12 +62,12 @@ export class Player {
   private canMoveVertically(yOffset: number): boolean {
     if (yOffset == 0) return true;
 
-    let walkable = GameConfig.walkableTiles;
+    let walkable = GC.WALKABLE_TILES;
     let sign = yOffset > 0 ? 1 : -1;
     let xSteps = 0;
-    let ySteps = 1;
-    let curTile = this.relativeTileAt(0, ySteps * sign);
-
+    let ySteps = 0;
+      
+    let curTile = this.relativeTileAt(0, ySteps * sign)
     while (
       ySteps < Math.abs(yOffset) &&
       (walkable.includes(curTile.type) || curTile.type == TileType.EMPTY)
@@ -71,7 +78,7 @@ export class Player {
 
     curTile = this.relativeTileAt(xSteps, ySteps * sign);
     while (curTile!.type == TileType.EMPTY) {
-      xSteps++;
+      xSteps--;
       curTile = this.relativeTileAt(xSteps, ySteps * sign);
     }
     return walkable.includes(curTile.type);
@@ -88,6 +95,14 @@ export class Player {
   }
 
   public relativeTileAt(x: number, y: number): Tile {
-    return this.map.tileAt(this.posX() + x, this.posY() + y);
+    let tempTile = this.map.tileAt(this.pos().x + x, this.pos().y + y);
+    return tempTile;
+  }
+
+  private drawPlayer() {
+    document.getElementsByClassName("player")[0]?.classList.remove("player");
+    let curTileId = "tile-" + this.pos().x + "-" + this.pos().y;
+    let playerTile = document.getElementById(curTileId);
+    playerTile?.classList.add("player");
   }
 }

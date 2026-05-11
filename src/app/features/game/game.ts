@@ -8,16 +8,12 @@ import { UiManager } from './core/UiManager';
 @Component({
     selector: "game",
     standalone: true,
-    providers: [InputRouter, GameState, UiManager],
+    providers: [InputRouter, UiManager],
     imports: [MapComponent],
     templateUrl: "./game.html"
 })
 export class GameComponent {
-    onExecuteCommand = new Subject<void>();
-    onWriteChar = new Subject<void>();
-
     public gameState = inject(GameState);
     public inputRouter = inject(InputRouter);
     public uiManager = inject(UiManager);
-    
 };

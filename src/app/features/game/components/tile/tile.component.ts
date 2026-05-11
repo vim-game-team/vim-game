@@ -1,25 +1,34 @@
-import { Component, inject, Input } from '@angular/core';
+import { Component, computed, inject, input, Input } from '@angular/core';
 import { GameState } from '../../services/game-state.service';
 import { Tile } from '../../models/tile';
+import { GC } from '../../constants/game-config';
 
 @Component({
   selector: 'tile-component',
   template: `
-    <div [id]="id" class="tile" [class]="tile.type" [class.player]="isPlayerHere()">
-      {{ tile.value }}
+    <div id="tile-{{x()}}-{{y()}}" 
+    class="tile" 
+    [class]="tile().type" 
+    [class.player]="isPlayer()"
+    [style.left.px] = "x() * size"
+    [style.top.px] = "y() * size"
+                >
+      {{ tile().value }}
     </div>
   `,
   styleUrl: './tile.css',
 })
 export class TileComponent {
-  @Input() tile!: Tile;
-  @Input() id!: string;
-  @Input() x!: number;
-  @Input() y!: number;
-
+  x = input.required<number>();
+  y = input.required<number>();
+  public size = GC.TILE_SIZE;
   public gameState = inject(GameState);
 
-  isPlayerHere(): boolean {
-    return this.gameState.player.posX() === this.x && this.gameState.player.posY() === this.y;
-  }
+  public tile = computed(() => {
+    return this.gameState.map.tileAt(this.x(), this.y());
+  });
+
+  public isPlayer = computed(() =>
+    this.gameState.player.pos().x === this.x() &&
+    this.gameState.player.pos().y === this.y());
 }

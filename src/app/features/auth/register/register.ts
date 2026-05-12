@@ -6,7 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { AuthService } from '../../../shared/services/auth.service';
 import { MatCardModule } from '@angular/material/card';
 import { AbstractControl } from '@angular/forms';
-
+import { Router } from '@angular/router'
 
 
 
@@ -29,6 +29,10 @@ function passwordMatchValidator(form: AbstractControl) {
 })
 export class Register {
 
+  constructor(private authService: AuthService, private router: Router) { }
+
+  errorMessage = '';
+
   form = new FormGroup({
     email: new FormControl('', [
       Validators.required,
@@ -40,8 +44,19 @@ export class Register {
   }, { validators: passwordMatchValidator });
 
   onSubmit() {
-    console.log(this.form.value);
-    this.form.reset()
+    const { email, password } = this.form.value;
+    this.authService.register(email!, password!)
+      .then(() => this.router.navigate(['/']))
+      .catch((error) => {
+        if (error.code === 'auth/email-already-in-use') {
+          this.errorMessage = 'Email is already in use';
+        } else if (error.code === 'auth/weak-password') {
+          this.errorMessage = 'Password is too weak';
+        } else {
+          this.errorMessage = 'Something went wrong. Please try again';
+        }
+      });
+
   }
 }
 

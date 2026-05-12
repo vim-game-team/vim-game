@@ -49,6 +49,10 @@
                     }
                 </div>
 
+                @if (errorMessage) {
+                <p class="error">{{ errorMessage }}</p>
+                }
+
                 <button type="submit" mat-raised-button color="primary" [disabled]="form.invalid">
                     Register
                 </button>

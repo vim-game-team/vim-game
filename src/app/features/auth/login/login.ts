@@ -17,6 +17,7 @@ import { MatCardModule } from '@angular/material/card';
     RouterLink
   ],
   templateUrl: './login.html',
+   styleUrl: './login.css',
 
 })
 export class Login {

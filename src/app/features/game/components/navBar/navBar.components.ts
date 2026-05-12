@@ -1,5 +1,8 @@
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component,OnInit } from '@angular/core';
+import { RouterLink, Router } from '@angular/router';
+import { AuthService } from '../../../../shared/services/auth.service';
+import { User } from 'firebase/auth';
+
 
 @Component({
   selector: 'nav-bar',
@@ -8,6 +11,20 @@ import { RouterLink } from '@angular/router';
   templateUrl: './navBar.html',
   styleUrl: './navBar.css'
 })
-export class NavBarComponent {
-  isLoggedIn = false; // This should be replaced with actual authentication logic
+export class NavBarComponent  implements OnInit {
+  isLoggedIn = false; 
+  constructor(private authService: AuthService, private router: Router) {}
+
+   ngOnInit() {
+    this.authService.onAuthChange((user : User | null )=> {
+      this.isLoggedIn = !!user;
+    });
+  }
+
+  logout() {
+  this.authService.logout()
+    .then(() => this.router.navigate(['/login']));
+}
+
+
 }

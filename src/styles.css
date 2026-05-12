@@ -1,18 +1,16 @@
 @import '@angular/material/prebuilt-themes/azure-blue.css';
-body {
-margin: 0;
-padding: 0;
-display: flex;
-justify-content: center;
-align-items: center;
-min-height: 100vh;
 
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
 }
 
 mat-card {
-    width: 350px;
-    padding: 30px;
+  width: 350px;
+  padding: 30px;
 }
+
 .error {
   color: red;
 }

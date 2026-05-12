@@ -5,9 +5,18 @@ h1 {
 form {
     display: flex;
     flex-direction: column;
-    width: 350px;
-    gap: 16px;
+    width: 100%;
+    gap: 12px;
 }
 .error{
     color:red;
+}
+.login-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 60px);
+}
+mat-card-header{
+margin-bottom: 16px;
 }

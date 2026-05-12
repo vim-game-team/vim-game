@@ -1,37 +1,51 @@
-<mat-card>
+<div class="login-wrapper">
+    <mat-card>
 
-    <mat-card-header>Login</mat-card-header>
-    <mat-card-content>
-        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <mat-card-header>Login</mat-card-header>
+        <mat-card-content>
+            <form [formGroup]="form" (ngSubmit)="onSubmit()">
 
-            <div>
-                <mat-form-field appearance="outline">
-                    <mat-label>E-Mail</mat-label>
-                    <input matInput type="email" formControlName="email" />
-                </mat-form-field>
-            </div>
+                <div>
+                    <mat-form-field appearance="outline">
+                        <mat-label>E-Mail</mat-label>
+                        <input matInput type="email" formControlName="email" />
 
-            <div>
-                <mat-form-field appearance="outline">
-                    <mat-label>Password</mat-label>
-                    <input matInput type="password" formControlName="password" />
+                        @if(form.get('email')?.hasError('required')){
+                        <mat-error>Email is required</mat-error>
+                        }
+                        
+                        @if(form.get('email')?.hasError('email')){
+                        <mat-error>Invalid email format</mat-error>
+                        }
 
-                </mat-form-field>
-            </div>
+                    </mat-form-field>
+                </div>
 
-            <button type="submit" mat-raised-button color="primary" [disabled]="form.invalid">
-                Sign in
-            </button>
+                <div>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Password</mat-label>
+                        <input matInput type="password" formControlName="password" />
 
-            <button type="button" mat-stroked-button (click)="loginWithGoogle()">Sign in with
-                <img src="https://www.google.com/favicon.ico" width="18" height="18" />
-            </button>
+                        @if (form.get('password')?.hasError('required')){
+                        <mat-error>Password is required</mat-error>
+                        }
+                    </mat-form-field>
+                </div>
 
-            @if (errorMessage) {
-            <p class="error">{{ errorMessage }}</p>
-            }
-        </form>
-        <a routerLink="/register">Register</a>
+                <button type="submit" mat-raised-button color="primary" [disabled]="form.invalid">
+                    Sign in
+                </button>
 
-    </mat-card-content>
-</mat-card>
+                <button type="button" mat-stroked-button (click)="loginWithGoogle()">Sign in with
+                    <img src="https://www.google.com/favicon.ico" width="18" height="18" />
+                </button>
+
+                @if (errorMessage) {
+                <p class="error">{{ errorMessage }}</p>
+                }
+            </form>
+            <a routerLink="/register">Register</a>
+
+        </mat-card-content>
+    </mat-card>
+</div>

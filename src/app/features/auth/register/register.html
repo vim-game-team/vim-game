@@ -1,1 +1,65 @@
-<h1>Register - coming soon!</h1>
+<div class="register-wrapper">
+    <mat-card>
+
+        <mat-card-header>Register</mat-card-header>
+        <mat-card-content>
+            <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+                <div>
+                    <mat-form-field appearance="outline">
+                        <mat-label>E-Mail</mat-label>
+                        <input matInput type="email" formControlName="email" />
+                        @if (form.get('email')?.hasError('required')) {
+                        <mat-error>Email is required</mat-error>
+                        }
+                        @if (form.get('email')?.hasError('email')) {
+                        <mat-error>Invalid email format</mat-error>
+                        }
+
+                         @if (form.get('email')?.hasError('pattern')) {
+                        <mat-error>Please enter a valid email address (e.g. name@example.com)</mat-error>
+                        }
+                    </mat-form-field>
+                </div>
+
+                <div>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Password</mat-label>
+                        <input matInput type="password" formControlName="password" />
+
+                        @if (form.get('password')?.hasError('required')) {
+                        <mat-error>Password is required</mat-error>
+                        }
+
+                        @if (form.get('password')?.hasError('minlength')) {
+                        <mat-error>Password must be at least 8 characters</mat-error>
+                        }
+                       
+                    </mat-form-field>
+                </div>
+
+                <div>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Confirm your Password</mat-label>
+                        <input matInput type="password" formControlName="confirmPassword" />
+                    </mat-form-field>
+
+                    @if (form.hasError('passwordMismatch') && form.get('confirmPassword')?.touched) {
+                    <p class="error">Passwords do not match</p>
+                    }
+                </div>
+
+                @if (errorMessage) {
+                <p class="error">{{ errorMessage }}</p>
+                }
+
+                <button type="submit" mat-raised-button color="primary" [disabled]="form.invalid">
+                    Register
+                </button>
+
+
+            </form>
+
+        </mat-card-content>
+    </mat-card>
+</div>

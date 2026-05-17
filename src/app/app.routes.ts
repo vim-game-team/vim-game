@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { GameComponent } from "./features/game/game";
-import { Login } from './features/login/login';
-import { Register } from './features/register/register';
+import { Login } from './features/auth/login/login';
+import { Register } from './features/auth/register/register';
 import { Profile } from './features/profile/profile';
 import { Commands } from './features/commands/commands';
 import { Intro } from './features/intro/intro';

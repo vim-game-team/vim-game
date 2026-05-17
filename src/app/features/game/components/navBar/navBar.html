@@ -9,6 +9,7 @@
 
         @if(isLoggedIn){
         <a routerLink="/profile">Profile</a>
+         <button (click)="logout()">Logout</button>
         }
         @else {
         <a routerLink="/login">Login</a>

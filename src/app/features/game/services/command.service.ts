@@ -14,6 +14,7 @@ export class CommandService {
     }
 
 
+
     public execute(tokens: InputToken[]) {
         let action: CmdType = tokens[0].cmd.type as CmdType;
         const executeFunction = (this as any)["execute_" + tokens[0].cmd.key];
@@ -56,7 +57,7 @@ export class CommandService {
     private execute_w(count1: number, cmd: Command) {
         let curChar = this.gameState.player.curTile().value;
         let curCharType: CharType = CmdUtils.getCharType(curChar);
-        
+
         let offset = CmdUtils.offsetToNextNonCharType(curCharType);
         offset = CmdUtils.offsetToNextNonCharType(CharType.WHITESPACE, offset);
 
@@ -70,4 +71,46 @@ export class CommandService {
     private execute_a() {
         this.gameState.inputMode = InputMode.INSERT;
     }
+
+    private execute_e() {
+        let curChar = this.gameState.player.curTile().value;
+        let nextChar = CmdUtils.player.relativeTileAt(1, 0).value;
+
+        let curType = CmdUtils.getCharType(curChar);
+        let nextType = CmdUtils.getCharType(nextChar)
+
+        let offset = 0;
+
+        if (curType !== nextType || curType === CharType.WHITESPACE) {
+            offset = CmdUtils.offsetToNextNonCharType(CharType.WHITESPACE, 1);
+            curType = CmdUtils.getCharType(CmdUtils.player.relativeTileAt(offset, 0).value);
+        }
+
+        offset = CmdUtils.offsetToNextNonCharType(curType, offset);
+
+        return [offset - 1, 0];
+    }
+
+    private execute_E() {
+        let curChar = this.gameState.player.curTile().value;
+        let nextChar = CmdUtils.player.relativeTileAt(1, 0).value;
+
+        let curType = CmdUtils.getCharType(curChar);
+        let nextType = CmdUtils.getCharType(nextChar)
+
+        let offset = 0;
+
+        if (curType === CharType.WHITESPACE || nextType === CharType.WHITESPACE) {
+            offset = CmdUtils.offsetToNextNonCharType(CharType.WHITESPACE, 1);
+            curType = CmdUtils.getCharType(CmdUtils.player.relativeTileAt(offset, 0).value);
+        }
+
+        while (curType != CharType.WHITESPACE) {
+            offset++;
+            curType = CmdUtils.getCharType(CmdUtils.player.relativeTileAt(offset, 0).value);
+        }
+
+        return [offset - 1, 0]
+    }
+
 }

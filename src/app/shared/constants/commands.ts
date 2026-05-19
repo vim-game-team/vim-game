@@ -8,3 +8,5 @@ commands.set('k', new Command('k', CmdType.MOVEMENT)); // move up
 commands.set('l', new Command('l', CmdType.MOVEMENT)); // move right
 commands.set('i', new Command('i', CmdType.MODESWITCH)); // switch to insert mode at left side
 commands.set('w', new Command('w', CmdType.MOVEMENT)); // move to next non-alpabetic 
+commands.set('e', new Command('e', CmdType.MOVEMENT)); //move end of word
+commands.set('E', new Command('E', CmdType.MOVEMENT)) //move end of WORD 

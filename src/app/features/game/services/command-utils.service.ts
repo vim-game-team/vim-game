@@ -27,10 +27,11 @@ export class CmdUtils {
 
     return offset;
   }
-
-  public static offsetToPrevWhitespace(offset = 0) {
+  
+  public static offsetToPrevNonWhitespace(offset = -1) {
     let curTileType = this.getCharType(this.player.relativeTileAt(offset, 0).value);
-    while (curTileType !== CharType.WHITESPACE) {
+
+    while (curTileType === CharType.WHITESPACE) {
       offset--;
       curTileType = this.getCharType(this.player.relativeTileAt(offset, 0).value);
     }
@@ -38,28 +39,18 @@ export class CmdUtils {
     return offset;
   }
 
-  public static offsetToPrevNonCharType(type: CharType, offset = 0) {
-    let curTileType = this.getCharType(this.player.relativeTileAt(offset, 0).value);
-    while (curTileType === type) {
-      offset--;
-      curTileType = this.getCharType(this.player.relativeTileAt(offset, 0).value);
-    }
-
-    return offset;
-  }
-
-  public static offsetToPrevWordStart(type: CharType, offset = 0): number {
-    let curType = this.getCharType(this.player.relativeTileAt(offset, 0).value);
-    if (curType === type || curType === CharType.WHITESPACE) {
-      while (
-        this.getCharType(this.player.relativeTileAt(offset, 0).value) === CharType.WHITESPACE
-      ) {
-        offset--;
-      }
-      curType = this.getCharType(this.player.relativeTileAt(offset, 0).value);
-    }
+  public static offsetToPrevWordStart(offset: number) {
+    const curType = this.getCharType(this.player.relativeTileAt(offset, 0).value);
 
     while (this.getCharType(this.player.relativeTileAt(offset - 1, 0).value) === curType) {
+      offset--;
+    }
+
+    return offset;
+  }
+
+  public static offsetToPrevWORDStart(offset: number) {
+    while (this.getCharType(this.player.relativeTileAt(offset - 1, 0).value) !== CharType.WHITESPACE) {
       offset--;
     }
 

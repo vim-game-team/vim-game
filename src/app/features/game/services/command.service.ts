@@ -30,7 +30,7 @@ export class CommandService {
           break;
         }
       }
-    } catch (e) {}
+    } catch (e) { }
   }
 
   private execute_h() {
@@ -67,54 +67,16 @@ export class CommandService {
     this.gameState.inputMode = InputMode.INSERT;
   }
 
-  // moves to the start of the current word
-  // if on whitespace or already at a word start -> skip back over whitespace -> then go to start of previous word
-  // word = block of same char type (alphanum or symbol)
   private execute_b() {
-    const curChar = this.gameState.player.curTile().value;
-    let curType = CmdUtils.getCharType(curChar);
-    let offset = 0;
-
-    const prevType = CmdUtils.getCharType(
-      this.gameState.player.relativeTileAt(offset - 1, 0).value,
-    );
-    if (curType === CharType.WHITESPACE || prevType !== curType) {
-      while (
-        CmdUtils.getCharType(this.gameState.player.relativeTileAt(offset - 1, 0).value) ===
-        CharType.WHITESPACE
-      ) {
-        offset--;
-      }
-      curType = CmdUtils.getCharType(this.gameState.player.relativeTileAt(offset - 1, 0).value);
-    }
-
-    while (
-      CmdUtils.getCharType(this.gameState.player.relativeTileAt(offset - 1, 0).value) === curType
-    ) {
-      offset--;
-    }
+    let offset = CmdUtils.offsetToPrevNonWhitespace();
+    offset = CmdUtils.offsetToPrevWordStart(offset);
 
     return [offset, 0];
   }
 
-  // moves to the start of the current WORD
-  // WORD = block of non-whitespace (ignores symbol/alphanum distinction)
-  // if on whitespace or at a WORD start -> skip back over whitespace -> then go to start of previous WORD
   private execute_B() {
-    let offset = 0;
-    while (
-      CmdUtils.getCharType(this.gameState.player.relativeTileAt(offset - 1, 0).value) ===
-      CharType.WHITESPACE
-    ) {
-      offset--;
-    }
-
-    while (
-      CmdUtils.getCharType(this.gameState.player.relativeTileAt(offset - 1, 0).value) !==
-      CharType.WHITESPACE
-    ) {
-      offset--;
-    }
+    let offset = CmdUtils.offsetToPrevNonWhitespace();
+    offset = CmdUtils.offsetToPrevWORDStart(offset);
 
     return [offset, 0];
   }

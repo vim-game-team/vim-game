@@ -55,16 +55,25 @@ export class Map {
         return this.tiles().at(y)!.at(x)!;
     }
 
-    public deleteCharAt(posX: number, posY: number) {
+    public deleteCharAt(posX: number, posY: number, wrap: boolean = true) {
         if (this.tileAt(posX - 1, posY).type != TileType.GROUND)
             return;
 
         let lineEnd = this.getLineEnd(posX, posY);
+        let lastTile = new Tile("$ ");
+        if (
+            wrap
+            // && check if last char is newline char
+        ) {
+            let nextLineStart = this.getLineStart(this.getLineStart(posX, posY), posY + 1);
+            lastTile = this.tileAt(nextLineStart, posY + 1);
+            this.deleteCharAt(nextLineStart + 1, posY + 1)
+        }
 
         this.tiles.update(t => {
             let row = [...t[posY]];
             row.copyWithin(posX - 1, posX, lineEnd);
-            row[lineEnd - 1] = new Tile("$ ");
+            row[lineEnd - 1] = lastTile;
             t[posY] = row;
             return [...t];
         });
@@ -109,15 +118,16 @@ export class Map {
                 curTile = this.tileAt(posX + offset, posY);
             }
             while (curTile.type == TileType.WALL)
-                offset--;
+            // offset--;
         }
         else {
             do {
                 offset--;
                 curTile = this.tileAt(posX + offset, posY);
             }
-            while (posX + offset >= 0 && curTile.type != TileType.WALL)
-            console.log("offset to start: " + offset);
+            while (posX + offset >= 0
+                && curTile.type != TileType.WALL)
+            offset++;
         }
         return posX + offset;
 
@@ -157,13 +167,14 @@ export class Map {
     private tryWrap(posX: number, posY: number, chars: string): boolean {
         if (this.nextLineExists(posX, posY)) {
             let lineEnd = this.getLineEnd(posX, posY);
+            let lineStart = this.getLineStart(posX, posY);
+            let nextLineStart = this.getLineStart(lineStart, posY + 1);
 
             for (let i = 0; i < chars.length; i++) {
-                this.deleteCharAt(lineEnd - i, posY);
+                this.deleteCharAt(lineEnd - i, posY, false);
             }
+            this.write(nextLineStart, posY + 1, chars);
 
-            let start = this.getLineStart(posX, posY + 1);
-            this.write(start + 1, posY + 1, chars);
             return true;
         }
         else

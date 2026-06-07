@@ -59,34 +59,71 @@ export class Map {
         if (this.tileAt(posX - 1, posY).type != TileType.GROUND)
             return;
 
-        let lineEnd = this.findLineEnd(posX, posY);
+        let lineEnd = this.getLineEnd(posX, posY);
 
         this.tiles.update(t => {
             let row = [...t[posY]];
-            row.copyWithin(posX - 1, posX, posX + lineEnd);
-            row[posX + lineEnd - 1] = new Tile("$ ");
-            t[posY] = row;
-            return [...t];
-        });
-
-    }
-
-    public insertCharAt(posX: number, posY: number, char: string) {
-        if (!this.canWriteAt(posX, posY))
-            throw "can't write, line full";
-
-        let lineEnd = this.findLineEnd(posX, posY);
-
-        this.tiles.update(t => {
-            let row = [...t[posY]];
-            row.copyWithin(posX + 1, posX, lineEnd + posX);
-            row[posX] = new Tile("'" + char);
+            row.copyWithin(posX - 1, posX, lineEnd);
+            row[lineEnd - 1] = new Tile("$ ");
             t[posY] = row;
             return [...t];
         });
     }
 
-    public findLineEnd(posX: number, posY: number): number {
+    public write(posX: number, posY: number, chars: string): boolean {
+        if (chars.length == 0)
+            return true;
+
+        let toWrap: string = this.getOverflowingChars(posX, posY, chars);
+        if (toWrap.length > 0) {
+            if (!this.tryWrap(posX, posY, toWrap))
+                return false;
+        }
+
+        this.insertCharsAt(posX, posY, chars)
+        return true;
+    }
+
+    public insertCharsAt(posX: number, posY: number, chars: string) {
+        let lineEnd = this.getLineEnd(posX, posY);
+
+        this.tiles.update(t => {
+            let row = [...t[posY]];
+            row.copyWithin(posX + chars.length, posX, lineEnd);
+
+            for (let i = 0; i < chars.length; i++)
+                if (true)
+                    row[posX + i] = new Tile("'" + chars[i]);
+
+            t[posY] = row;
+            return [...t];
+        });
+    }
+
+    private getLineStart(posX: number, posY: number): number {
+        let offset = 0;
+        let curTile = this.tileAt(posX + offset, posY);
+        if (curTile.type == TileType.WALL) {
+            do {
+                offset++;
+                curTile = this.tileAt(posX + offset, posY);
+            }
+            while (curTile.type == TileType.WALL)
+                offset--;
+        }
+        else {
+            do {
+                offset--;
+                curTile = this.tileAt(posX + offset, posY);
+            }
+            while (posX + offset >= 0 && curTile.type != TileType.WALL)
+            console.log("offset to start: " + offset);
+        }
+        return posX + offset;
+
+    }
+
+    private getLineEnd(posX: number, posY: number): number {
         let curTile;
         let offset = -1;
         do {
@@ -94,11 +131,49 @@ export class Map {
             curTile = this.tileAt(posX + offset, posY);
         }
         while (!curTile.type.isStatic)
-        return offset;
+        return posX + offset;
     }
 
-    public canWriteAt(posX: number, posY: number): boolean {
-        let lineEnd = this.findLineEnd(posX, posY);
-        return this.tileAt(posX + lineEnd, posY).type == TileType.EMPTY;
+    private nextLineExists(posX: number, posY: number): boolean {
+        let limit = this.getLineEnd(posX, posY);
+        let lineStart = this.getLineStart(posX, posY + 1)
+        return lineStart <= limit;
     }
-}   
+
+    private getOverflowingChars(posX: number, posY: number, chars: string): string {
+        let lineEnd = this.getLineEnd(posX, posY);
+        for (let i = 0; i < chars.length; i++) {
+            if (
+                this.tileAt(lineEnd + i, posY).type != TileType.EMPTY
+                // must check if is newLine char
+            ) {
+                let overflow = this.getCharsAt(lineEnd - i - 1, lineEnd - 1, posY);
+                return overflow;
+            }
+        }
+        return "";
+    }
+
+    private tryWrap(posX: number, posY: number, chars: string): boolean {
+        if (this.nextLineExists(posX, posY)) {
+            let lineEnd = this.getLineEnd(posX, posY);
+
+            for (let i = 0; i < chars.length; i++) {
+                this.deleteCharAt(lineEnd - i, posY);
+            }
+
+            let start = this.getLineStart(posX, posY + 1);
+            this.write(start + 1, posY + 1, chars);
+            return true;
+        }
+        else
+            return false;
+    }
+
+    public getCharsAt(xStart: number, xEnd: number, y: number) {
+        let str = "";
+        for (let x = xStart; x <= xEnd; x++)
+            str += this.tileAt(x, y).value;
+        return str;
+    }
+}      

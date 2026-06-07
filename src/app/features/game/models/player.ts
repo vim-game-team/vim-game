@@ -42,7 +42,8 @@ export class Player {
   }
 
   public writeChar(char: string) {
-    this.map.insertCharAt(this.pos().x, this.pos().y, char);
+    // this.map.insertCharsAt(this.pos().x, this.pos().y, char);
+    this.map.write(this.pos().x, this.pos().y, char);
     this.move(1, 0);
   }
 

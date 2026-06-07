@@ -22,7 +22,8 @@ export class CommandService {
             switch (action) {
                 case CmdType.MOVEMENT: {
                     let result: any = executeFunction.call(this);
-                    for (let i = 0; i < tokens[0].count; i++)
+                        result[0] *=tokens[0].count;
+                        result[1] *=tokens[0].count;
                         this.gameState.player.move(result[0], result[1]);
                     break;
                 }

@@ -5,7 +5,7 @@ export const chunks = new Map<string, string[]>(
                 "'H'e'l'l'o' 'P'l'a'y'e'r',$ $ $ ",
                 "'T'h'i's' 'i's' -V'i'M'a'n'i'a'!$ $ $ |w'!",
                 "|w|w|w|w'A",
-                "'A",
+                "'c'a't',' 'd'o'g',','$'$",
                 "'B",
                 "'C",
                 "'D",

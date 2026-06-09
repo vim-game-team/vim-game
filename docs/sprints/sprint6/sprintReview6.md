@@ -1,4 +1,4 @@
-# Sprint Review Protocol
+# Sprint 6 Review Protocol
 
 ---
 
@@ -27,16 +27,18 @@
 
 ## Requirements under Review
 
-| Req ID    | Short Description       | Estimate [h] | Real Effort [h] | Delta [h] | Passed | Failed | Remarks                                          |
-|-----------|-------------------------|:------------:|:---------------:|:---------:|:------:|:------:|--------------------------------------------------|
-| #         |                         |      -       |        -        |     -     |   -    |   -    |                                                  |
-| #         |                         |      -       |        -        |     -     |   -    |   -    |                                                  |
-| #         |                         |      -       |        -        |     -     |   -    |   -    |                                                  |
-| #         |                         |      -       |        -        |     -     |   -    |   -    |                                                  |
-| #         |                         |      -       |        -        |     -     |   -    |   -    |                                                  |
-| #         |                         |      -       |        -        |     -     |   -    |   -    |
-| #         |                         |      -       |        -        |     -     |   -    |   -    |                                                  |
-| **TOTAL** |                         |    **00**    |      **00**     |   **00**  | **0**  | **0**  |                                                  |
+| Issue ID    | Short Description       | Estimate [h] | Real Effort [h] | Delta [h] | Passed | Failed 
+|-----------|-------------------------|:------------:|:---------------:|:---------:|:------:|:------:|
+| #30       |     Auth-Guard          |      1       |         1       |     0     |   ✔    |   -    |                                                  
+| #34       |     Level-Interface     |      1       |         1       |     0     |   ✔    |   -    |                                                  
+| #35       |     Goal-Tile -Typ      |      -       |        -        |     -     |   -    |   x    |                                                  
+| #65       |text-flow-implementation |      10      |        10       |     0     |   ✔    |   -    |                                                 
+| #80       |   PR: b und B review    |      1       |        1        |     0     |   ✔    |   -    |                                                  
+| #81       |   PR: e und E revie     |      1       |        1        |     0     |   ✔    |   -    |                                                  
+| #82       |Firestore User Collection|      -       |         -       |     -     |   -    |   x    |                                                  
+| #83       |   Level 1               |      -       |        -        |     -     |   -    |   x    |                                                  
+| #84       |Konzept für 3 Levels     |      -       |        -        |     -     |   -    |   x    |                                                  
+| **TOTAL** |                         |    **14**    |      **14**     |   **00**  | **4**  | **4**  |                                                  
  
 ---
 
@@ -44,17 +46,13 @@
 
 **What went well?**
 
-- 
-- 
+- Wir sind ein Stückchen weiter gekommen
 
 **What didn't go well?**
 
-- 
+- Wir haben uns nicht so viel zeit genommen für den sprint weil andere Sachen Priorität hatten
 
-**What will we improve next sprint?**
 
-- 
-- 
 
 ---
 

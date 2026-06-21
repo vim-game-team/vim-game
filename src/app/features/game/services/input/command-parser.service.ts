@@ -21,7 +21,7 @@ export class CommandParser {
             this.reset();
             return;
         }
-        this.executeIfPossible();
+        this.tryExecute();
     }
     
     private validateAndParse(input: string): boolean {
@@ -48,7 +48,7 @@ export class CommandParser {
     }
 
 
-    private executeIfPossible() {
+    private tryExecute() {
         if (this.inputArgs.at(-1)?.cmd.expects.length != 0)
             return
 

@@ -2,11 +2,11 @@ export const chunks = new Map<string, string[]>(
     [
         ["0-0",
             [
-                "'H'e'l'l'o' 'P'l'a'y'e'r',$ $ $ ",
-                "'T'h'i's' 'i's' 'V'i'M'a'n'i'a'!$ $ $ |w'!",
-                "|w|w|w|w'A$ $ $ |w",
-                "'A$ $ $ $ $ $ |w",
-                "'B",
+                "'H'e'l'l'o' 'P'l'a'y'e'r','\n$ $ $ ",
+                "'T'h'i's' 'i's' 'V'i'M'a'n'i'a|w'!",
+                "|w|w|w|w'A'\n$ $ $ |w",
+                "'A'\n$ $ $ $ $ $ |w",
+                "'B'\n",
                 "'C",
                 "'D",
                 "'E",

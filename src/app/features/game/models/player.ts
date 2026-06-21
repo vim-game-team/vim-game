@@ -16,20 +16,16 @@ export class Player {
   }
 
   public move(moveX: number = 0, moveY: number = 0) {
-    if (!this.canMoveVertically(moveY) ||
-      !this.canMoveHorizontally(moveX))
+    if (
+      !this.canMoveVertically(moveY) ||
+      !this.canMoveHorizontally(moveX)
+    )
       return;
 
-    if (moveY != 0) {
+    if (moveY != 0)
       moveX = this.offsetToLineStart(0, moveY);
-    }
 
-    this.pos.update(p => {
-      p.x += moveX;
-      p.y += moveY;
-      return new Pos(p.x, p.y);
-    });
-
+    this.addPos(new Pos(moveX, moveY));
   }
 
   public curTile(): Tile {
@@ -37,14 +33,18 @@ export class Player {
   }
 
   public deleteChar() {
-    this.map.deleteCharAt(this.pos().x, this.pos().y);
-    this.move(-1, 0);
+    let toDeletePos = this.map.moveOnText(this.pos().x, this.pos().y, -1);
+    // console.log("toDeletePos: " + toDeletePos.toString())
+    if (this.map.deleteCharAt(toDeletePos.x + 1, toDeletePos.y) != "") {
+      let newPos = this.map.moveOnText(this.pos().x, this.pos().y, -1);
+      this.setPos(newPos);
+    }
   }
 
   public writeChar(char: string) {
-    // this.map.insertCharsAt(this.pos().x, this.pos().y, char);
     this.map.write(this.pos().x, this.pos().y, char);
-    this.move(1, 0);
+    let newPos = this.map.moveOnText(this.pos().x, this.pos().y, char.length);
+    this.setPos(newPos);
   }
 
   private canMoveHorizontally(xOffset: number): boolean {
@@ -97,10 +97,21 @@ export class Player {
     return tempTile;
   }
 
-  private drawPlayer() {
-    document.getElementsByClassName("player")[0]?.classList.remove("player");
-    let curTileId = "tile-" + this.pos().x + "-" + this.pos().y;
-    let playerTile = document.getElementById(curTileId);
-    playerTile?.classList.add("player");
+  private addPos(pos: Pos) {
+    this.pos.update(p => {
+      p.x += pos.x;
+      p.y += pos.y;
+      return new Pos(p.x, p.y);
+    });
+
+  }
+
+  private setPos(pos: Pos) {
+    this.pos.update(p => {
+      p.x = pos.x;
+      p.y = pos.y;
+      return new Pos(p.x, p.y);
+    });
+
   }
 }

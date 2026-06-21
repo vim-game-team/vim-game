@@ -18,6 +18,11 @@ export class WriterService {
                 this.gameState.player.deleteChar();
                 break;
             }
+            case "Enter": {
+                input = '\n';
+                this.gameState.player.writeChar(input);
+                break;
+            }
             default: {
                 this.gameState.player.writeChar(input);
             }
@@ -26,7 +31,8 @@ export class WriterService {
     public validate(input: string) {
         let validSpecialKeys = [
             "Backspace",
-            "Escape"
+            "Escape",
+            "Enter"
         ];
 
         return input.length == 1

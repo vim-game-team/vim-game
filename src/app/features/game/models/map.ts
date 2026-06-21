@@ -130,20 +130,18 @@ export class Map {
         let overflow = this.getOverflowingChars(posX, posY, chars);
         let writableTiles = this.countWritableTilesFrom(posX, posY);
 
-        // console.log("line: " + posY + "- writableCount: " + writableTiles +  "\nWRITING CHARS: " + chars);
         if (chars.length > writableTiles) {
             overflow = chars.substring(writableTiles,) + overflow;
             chars = chars.substring(0, writableTiles);
-            console.log("OVERFLOW: " + overflow);
-            console.log("CHOPPED CHARS: " + chars);
         }
 
         if (chars.at(-1) == "\n") {
-            // console.log("WRAPPING: " + this.getCharsAt(posX + chars.length - 1, this.getLineEnd(posX, posY) - 1, posY));
+            let wrappingChars = this.getCharsAt(posX, this.getLineEnd(posX, posY) -1, posY);
+            console.log("wrapping after newLine: " + wrappingChars );
             this.tryWrapDown(
                 posX + chars.length - 1,
                 posY,
-                this.getCharsAt(posX + chars.length - 1, this.getLineEnd(posX, posY) - 1, posY))
+                wrappingChars)
         }
         else if (overflow.length > 0) {
             if (!this.tryWrapDown(posX, posY, overflow))

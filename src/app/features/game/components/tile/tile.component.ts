@@ -8,7 +8,7 @@ import { GC } from '../../constants/game-config';
   template: `
     <div id="tile-{{x()}}-{{y()}}" 
     class="tile" 
-    [class]="tile().type" 
+    [class]="tile().type.value" 
     [class.player]="isPlayer()"
     [style.left.px] = "x() * size"
     [style.top.px] = "y() * size"

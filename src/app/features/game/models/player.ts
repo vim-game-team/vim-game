@@ -1,6 +1,4 @@
 import { effect, signal } from "@angular/core";
-import { max, min } from "../../../shared/utils";
-import { GC } from "../constants/game-config"
 import { Map } from "./map";
 import { TileType } from "./types";
 import { Tile } from "./tile";
@@ -16,20 +14,16 @@ export class Player {
   }
 
   public move(moveX: number = 0, moveY: number = 0) {
-    if (!this.canMoveVertically(moveY) ||
-      !this.canMoveHorizontally(moveX))
+    if (
+      !this.canMoveVertically(moveY) ||
+      !this.canMoveHorizontally(moveX)
+    )
       return;
 
-    if (moveY != 0) {
+    if (moveY != 0)
       moveX = this.offsetToLineStart(0, moveY);
-    }
 
-    this.pos.update(p => {
-      p.x += moveX;
-      p.y += moveY;
-      return new Pos(p.x, p.y);
-    });
-
+    this.addPos(new Pos(moveX, moveY));
   }
 
   public curTile(): Tile {
@@ -37,22 +31,25 @@ export class Player {
   }
 
   public deleteChar() {
-    this.map.deleteCharAt(this.pos().x, this.pos().y);
-    this.move(-1, 0);
+    let toDeletePos = this.map.moveOnText(this.pos().x, this.pos().y, -1);
+    let deleted = this.map.deleteCharAt(toDeletePos.x, toDeletePos.y);
+    if (deleted != "")
+      this.setPos(toDeletePos);
+
   }
 
   public writeChar(char: string) {
-    this.map.insertCharAt(this.pos().x, this.pos().y, char);
-    this.move(1, 0);
+    this.map.write(this.pos().x, this.pos().y, char);
+    let newPos = this.map.moveOnText(this.pos().x, this.pos().y, char.length);
+    this.setPos(newPos);
   }
 
   private canMoveHorizontally(xOffset: number): boolean {
     if (xOffset == 0) return true;
 
-    let walkable = GC.WALKABLE_TILES;
     let sign = xOffset > 0 ? 1 : -1;
     for (let i = 1; i <= Math.abs(xOffset); i++) {
-      if (!walkable.includes(this.relativeTileAt(i * sign, 0).type)) {
+      if (!this.relativeTileAt(i * sign, 0).type.isWalkable) {
         return false;
       }
     }
@@ -62,15 +59,13 @@ export class Player {
   private canMoveVertically(yOffset: number): boolean {
     if (yOffset == 0) return true;
 
-    let walkable = GC.WALKABLE_TILES;
     let sign = yOffset > 0 ? 1 : -1;
     let xSteps = 0;
     let ySteps = 0;
-      
+
     let curTile = this.relativeTileAt(0, ySteps * sign)
-    while (
-      ySteps < Math.abs(yOffset) &&
-      (walkable.includes(curTile.type) || curTile.type == TileType.EMPTY)
+    while (ySteps < Math.abs(yOffset)
+      && (curTile.type.isWalkable || curTile.type == TileType.EMPTY)
     ) {
       ySteps++;
       curTile = this.relativeTileAt(0, ySteps * sign);
@@ -81,7 +76,7 @@ export class Player {
       xSteps--;
       curTile = this.relativeTileAt(xSteps, ySteps * sign);
     }
-    return walkable.includes(curTile.type);
+    return curTile.type.isWalkable;
   }
 
   private offsetToLineStart(posX: number, posY: number): number {
@@ -99,10 +94,19 @@ export class Player {
     return tempTile;
   }
 
-  private drawPlayer() {
-    document.getElementsByClassName("player")[0]?.classList.remove("player");
-    let curTileId = "tile-" + this.pos().x + "-" + this.pos().y;
-    let playerTile = document.getElementById(curTileId);
-    playerTile?.classList.add("player");
+  private addPos(pos: Pos) {
+    this.pos.update(p => {
+      p.x += pos.x;
+      p.y += pos.y;
+      return new Pos(p.x, p.y);
+    });
+  }
+
+  private setPos(pos: Pos) {
+    this.pos.update(p => {
+      p.x = pos.x;
+      p.y = pos.y;
+      return new Pos(p.x, p.y);
+    });
   }
 }

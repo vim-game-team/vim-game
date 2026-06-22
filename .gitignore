@@ -39,6 +39,7 @@ testem.log
 __screenshots__/
 
 .angular
+.vscode
 
 # System files
 

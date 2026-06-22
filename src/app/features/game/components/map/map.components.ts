@@ -27,7 +27,7 @@ import { Pos } from "../../models/pos";
                     [x]="tile().x"
                     [y]="tile().y"
                     />
-                }
+                }   
             </div> 
         }
         </div>

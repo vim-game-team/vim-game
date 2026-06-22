@@ -13,24 +13,32 @@ export class CommandService {
     CmdUtils.player = gameState.player;
   }
 
+
   public execute(tokens: InputToken[]) {
     let action: CmdType = tokens[0].cmd.type as CmdType;
-    const executeFunction = (this as any)['execute_' + tokens[0].cmd.key];
+    const executeFunction = (this as any)["execute_" + tokens[0].cmd.key];
 
     try {
       switch (action) {
         case CmdType.MOVEMENT: {
           let result: any = executeFunction.call(this);
-          for (let i = 0; i < tokens[0].count; i++)
-            this.gameState.player.move(result[0], result[1]);
+          result[0] *= tokens[0].count;
+          result[1] *= tokens[0].count;
+          this.gameState.player.move(result[0], result[1]);
           break;
         }
         case CmdType.MODESWITCH: {
           let result: any = executeFunction.call(this);
           break;
         }
+
+        case CmdType.MODESWITCH: {
+          let result: any = executeFunction.call(this);
+          break;
+
+        }
       }
-    } catch (e) { }
+    } catch (e: any) { console.log("error") }
   }
 
   private execute_h() {

@@ -4,7 +4,7 @@ import { CommandParser } from "./command-parser.service";
 import { GameState } from "../game-state.service";
 import { Injectable } from "@angular/core";
 import { fromEvent } from "rxjs";
-import { WriterService } from "./writer.service";
+import { WriterService } from "../writer.service";
 
 @Injectable()
 export class InputRouter {
@@ -26,7 +26,6 @@ export class InputRouter {
                 this.commandParser.parse(input);
                 break;
             }
-            
             case InputMode.INSERT: {
                 if (this.writerService.validate(input))
                     this.writerService.write(input);

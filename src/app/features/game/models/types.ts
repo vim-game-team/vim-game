@@ -4,12 +4,13 @@ export enum CmdType {
     TEXTOBJ = "textobj",
 }
 
-export enum TileType {
-    EMPTY = "empty",
-    GROUND = "ground",
-    WALL = "wall",
-    DANGER = "danger",
-}
+export const TileType = {
+    EMPTY: { value: "empty", isWalkable: false, isStatic: true, charCode: '$' },
+    GROUND: { value: "ground", isWalkable: true, isStatic: false, charCode: "'" },
+    WALL: { value: "wall", isWalkable: false, isStatic: true, charCode: '|' },
+    DANGER: { value: "danger", isWalkable: true, isStatic: false, charCode: '-' },
+} as const;
+export type TileTypeName = keyof typeof TileType;
 
 export enum Action {
     MOVE,
@@ -21,7 +22,7 @@ export enum InputMode {
     INSERT = "insert",
 }
 
-export enum CharType{
+export enum CharType {
     ALPHANUM = "alphanum",
     WHITESPACE = "whitespace",
     SYMBOL = "symbol",

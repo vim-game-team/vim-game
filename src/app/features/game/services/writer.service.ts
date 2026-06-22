@@ -15,7 +15,7 @@ export class WriterService {
                 break;
             }
             case "Backspace": {
-                this.gameState.player.deleteChar();
+                this.gameState.player.deleteTiles();
                 break;
             }
             case "Enter": {

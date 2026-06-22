@@ -1,7 +1,8 @@
+import { Command } from '../../../shared/models/command';
 import { isAlphaNumeric } from '../../../shared/utils';
 import { Map } from '../models/map';
 import { Player } from '../models/player';
-import { CharType } from '../models/types';
+import { CharType, CmdType } from '../models/types';
 
 export class CmdUtils {
   public static map: Map;
@@ -17,6 +18,10 @@ export class CmdUtils {
         return CharType.SYMBOL;
     }
   }
+  
+  // public static getExecuteFunction(cmd: Command): any {
+  //   return (this as any)["execute_" + cmd.key];
+  // }
 
   public static offsetToNextNonCharType(type: CharType, offset = 0) {
     let curTileType = this.getCharType(this.player.relativeTileAt(offset, 0).value);
@@ -27,7 +32,7 @@ export class CmdUtils {
 
     return offset;
   }
-  
+
   public static offsetToPrevNonWhitespace(offset = -1) {
     let curTileType = this.getCharType(this.player.relativeTileAt(offset, 0).value);
 

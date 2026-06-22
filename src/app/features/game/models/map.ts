@@ -56,14 +56,14 @@ export class Map {
         return this.tiles().at(y)!.at(x)!;
     }
 
-    public moveOnText(x: number, y: number, offset: number): Pos {
+    public moveAlongText(x: number, y: number, offset: number): Pos {
         let tempTile;
         let curPos = new Pos(x, y);
         let sign = offset >= 0
             ? 1
             : -1;
         for (let i = 1; i <= Math.abs(offset); i++) {
-            tempTile = this.tileAt(curPos.x + (i * sign), curPos.y);
+            tempTile = this.tileAt(curPos.x + sign, curPos.y);
             if (tempTile.type.isWalkable)
                 curPos.x += sign;
             else {
@@ -171,7 +171,7 @@ export class Map {
         });
     }
 
-    private getLineStart(posX: number, posY: number): number {
+    public getLineStart(posX: number, posY: number): number {
         let offset = 0;
         let curTile = this.tileAt(posX + offset, posY);
 
@@ -195,7 +195,7 @@ export class Map {
         return posX + offset;
     }
 
-    private getPrevLineEnd(x: number, y: number): Pos {
+    public getPrevLineEnd(x: number, y: number): Pos {
         let lineStart = this.getLineStart(x, y);
         let lineEnd = this.getLineEnd(lineStart, y);
         let prevLineEnd = this.getLineEnd(lineEnd, y - 1);
@@ -203,7 +203,7 @@ export class Map {
         return new Pos(prevLineEnd - 1, y - 1);
     }
 
-    private getNextLineStart(x: number, y: number): Pos {
+    public getNextLineStart(x: number, y: number): Pos {
         let lineStart = this.getLineStart(x, y);
         let limit = this.countWritableTilesFrom(lineStart, y);
         let nextLineStart = this.getLineStart(lineStart, y + 1);
@@ -213,7 +213,7 @@ export class Map {
         return new Pos(nextLineStart, y + 1);
     }
 
-    private getLineEnd(posX: number, posY: number): number {
+    public getLineEnd(posX: number, posY: number): number {
         let curTile = this.tileAt(posX, posY);
         let offset = 0;
 
@@ -243,7 +243,7 @@ export class Map {
         return posX + offset;
     }
 
-    private nextLineExists(posX: number, posY: number, limit: number = 0): boolean {
+    public nextLineExists(posX: number, posY: number, limit: number = 0): boolean {
         try {
             let limit = this.countWritableTilesFrom(posX, posY) + posX;
             let nextLineStart = this.getNextLineStart(posX, posY).x;
@@ -254,7 +254,29 @@ export class Map {
         }
     }
 
-    private countWritableTilesFrom(posX: number, posY: number) {
+    public nextWalkableLeft(posX: number, posY: number): Pos {
+        let curPos = new Pos(posX, posY);
+        let tempTile = this.tileAt(curPos.x, curPos.y);
+        while (tempTile.type != TileType.GROUND) {
+            if (tempTile.type == TileType.WALL) {
+                curPos = this.getPrevLineEnd(curPos.x, curPos.y);
+            }
+            else
+                curPos.x--;
+            tempTile = this.tileAt(curPos.x, curPos.y);
+        }
+        // tempTile = this.tileAt(curPos.x + sign, curPos.y);
+        // if (tempTile.type.isWalkable)
+        //     curPos.x += sign;
+        // else {
+        //     curPos = sign == 1
+        //         ? this.getNextLineStart(curPos.x, curPos.y)
+        //         : this.getPrevLineEnd(curPos.x, curPos.y);
+        // }
+        return curPos;
+    }
+
+    public countWritableTilesFrom(posX: number, posY: number) {
         let tempTile;
         let count = -1;
 
@@ -267,7 +289,7 @@ export class Map {
         return count;
     }
 
-    private wrapUpwards(posX: number, posY: number, count: number, wrapFullLine: boolean = false): string {
+    public wrapUpwards(posX: number, posY: number, count: number, wrapFullLine: boolean = false): string {
         let lineStart = this.getLineStart(posX, posY);
         let lineEnd = this.getLineEnd(posX, posY);
         let emptyCount = this.countWritableTilesFrom(lineEnd, posY);
@@ -294,7 +316,7 @@ export class Map {
         return deletedChars;
     }
 
-    private tryWrapDown(posX: number, posY: number, chars: string): boolean {
+    public tryWrapDown(posX: number, posY: number, chars: string): boolean {
         if (chars == "")
             return true;
         if (!this.nextLineExists(posX, posY))

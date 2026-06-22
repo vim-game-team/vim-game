@@ -3,6 +3,8 @@ import { InputToken } from '../models/inputToken';
 import { Command } from '../../../shared/models/command';
 import { CharType, CmdType, InputMode } from '../models/types';
 import { CmdUtils } from './command-utils.service';
+import { Pos } from '../models/pos';
+import { TextArea } from '../models/textarea';
 
 export class CommandService {
   public gameState: GameState;
@@ -17,6 +19,7 @@ export class CommandService {
 
 
   public execute(tokens: InputToken[]) {
+
     let action: CmdType = tokens[0].cmd.type as CmdType;
     const executeFunction = (this as any)["execute_" + tokens[0].cmd.key];
 
@@ -40,6 +43,10 @@ export class CommandService {
         }
         case CmdType.DELETE: {
           this.clipBoard = executeFunction.call(this);
+          break;
+        }
+        case CmdType.OPERATOR: {
+          executeFunction.call(this, tokens[1].cmd!);
           break;
         }
       }
@@ -136,10 +143,35 @@ export class CommandService {
   }
 
   private execute_x() {
-    return this.gameState.player.deleteChar();
+    return this.gameState.player.deleteTiles();
   }
 
   private execute_p() {
     this.gameState.player.write(this.clipBoard);
+  }
+
+  private execute_d(cmd: Command) {
+    let textArea: TextArea;
+    let pPos = this.gameState.player.pos();
+    switch (cmd.key) {
+      case "d": {
+        let lineStart = this.gameState.map.getLineStart(pPos.x, pPos.y);
+        let lineEnd = this.gameState.map.getLineEnd(pPos.x, pPos.y);
+        textArea = new TextArea(new Pos(lineStart, pPos.y), new Pos(lineEnd, pPos.y));
+        break;
+      }
+      default: {
+        const argFunc = (this as any)["execute_" + cmd.key];
+        let offset = argFunc.call(this);
+        let offsetPos = new Pos(offset[0], offset[1]);
+        let endPos = new Pos(pPos.x, pPos.y).offset(offsetPos);
+        textArea = new TextArea(pPos, endPos);
+        break;
+      }
+    }
+
+    this.clipBoard = this.gameState.map.deleteChars(textArea.start.x + 1, textArea.end.x + 1, pPos.y, true)
+    let newPlayerPos = this.gameState.map.nextWalkableLeft(pPos.x, pPos.y);
+    this.gameState.player.setPos(newPlayerPos);
   }
 }

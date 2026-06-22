@@ -3,6 +3,7 @@ import { Map } from "./map";
 import { TileType } from "./types";
 import { Tile } from "./tile";
 import { Pos } from "./pos";
+import { ElementSchemaRegistry } from "@angular/compiler";
 
 
 export class Player {
@@ -30,9 +31,12 @@ export class Player {
     return this.map.tileAt(this.pos().x, this.pos().y);
   }
 
-  public deleteChar(): string {
-    let toDeletePos = this.map.moveOnText(this.pos().x, this.pos().y, -1);
-    let deleted = this.map.deleteCharAt(toDeletePos.x, toDeletePos.y);
+  public deleteTiles(): string {
+    let deleted = "";
+    let toDeletePos;
+
+    toDeletePos = this.map.moveAlongText(this.pos().x, this.pos().y, -1);
+    deleted = this.map.deleteCharAt(toDeletePos.x, toDeletePos.y);
     if (deleted != "")
       this.setPos(toDeletePos);
 
@@ -41,7 +45,7 @@ export class Player {
 
   public write(str: string) {
     this.map.write(this.pos().x, this.pos().y, str);
-    let newPos = this.map.moveOnText(this.pos().x, this.pos().y, str.length);
+    let newPos = this.map.moveAlongText(this.pos().x, this.pos().y, str.length);
     this.setPos(newPos);
   }
 
@@ -80,7 +84,7 @@ export class Player {
     return curTile.type.isWalkable;
   }
 
-  private offsetToLineStart(posX: number, posY: number): number {
+  public offsetToLineStart(posX: number, posY: number): number {
     let offset = 0;
     let curTile = this.relativeTileAt(posX + offset, posY);
     while (curTile!.type == TileType.EMPTY) {
@@ -95,7 +99,7 @@ export class Player {
     return tempTile;
   }
 
-  private addPos(pos: Pos) {
+  public addPos(pos: Pos) {
     this.pos.update(p => {
       p.x += pos.x;
       p.y += pos.y;
@@ -103,7 +107,7 @@ export class Player {
     });
   }
 
-  private setPos(pos: Pos) {
+  public setPos(pos: Pos) {
     this.pos.update(p => {
       p.x = pos.x;
       p.y = pos.y;

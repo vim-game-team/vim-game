@@ -80,4 +80,45 @@ export class CommandService {
 
     return [offset, 0];
   }
+
+  private execute_e() {
+    let curChar = this.gameState.player.curTile().value;
+    let nextChar = CmdUtils.player.relativeTileAt(1, 0).value;
+
+    let curType = CmdUtils.getCharType(curChar);
+    let nextType = CmdUtils.getCharType(nextChar);
+
+    let offset = 0;
+
+    if (curType !== nextType || curType === CharType.WHITESPACE) {
+      offset = CmdUtils.offsetToNextNonCharType(CharType.WHITESPACE, 1);
+      curType = CmdUtils.getCharType(CmdUtils.player.relativeTileAt(offset, 0).value);
+    }
+
+    offset = CmdUtils.offsetToNextNonCharType(curType, offset);
+
+    return [offset - 1, 0];
+  }
+
+  private execute_E() {
+    let curChar = this.gameState.player.curTile().value;
+    let nextChar = CmdUtils.player.relativeTileAt(1, 0).value;
+
+    let curType = CmdUtils.getCharType(curChar);
+    let nextType = CmdUtils.getCharType(nextChar);
+
+    let offset = 0;
+
+    if (curType === CharType.WHITESPACE || nextType === CharType.WHITESPACE) {
+      offset = CmdUtils.offsetToNextNonCharType(CharType.WHITESPACE, 1);
+      curType = CmdUtils.getCharType(CmdUtils.player.relativeTileAt(offset, 0).value);
+    }
+
+    while (curType != CharType.WHITESPACE) {
+      offset++;
+      curType = CmdUtils.getCharType(CmdUtils.player.relativeTileAt(offset, 0).value);
+    }
+
+    return [offset - 1, 0];
+  }
 }

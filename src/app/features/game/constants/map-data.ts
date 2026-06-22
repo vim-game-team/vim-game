@@ -7,21 +7,15 @@ export const chunks = new Map<string, string[]>(
                 "|w|w|w|w'A'\n$ $ $ |w",
                 "'A'\n$ $ $ $ $ $ |w",
                 "'B'\n",
-                "'C",
-                "'D",
-                "'E",
-                "'F",
-                "'G",
-                "'H",
-                "'I",
-                "'J",
-                "'K",
-                "'L",
+                "'C'\n",
+                "'D'\n",
+                "'E'\n",
+                "$ ",
             ]
         ],
         ["1-0",
             [
-                "'T'e's't",
+                "|w",
             ]
         ]
     ]

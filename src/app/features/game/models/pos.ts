@@ -8,6 +8,5 @@ export class Pos {
     }
     public toString(): string {
         return "[" + this.x + "-" + this.y + "]";
-
     }
 }

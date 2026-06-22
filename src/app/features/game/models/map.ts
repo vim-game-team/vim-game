@@ -77,30 +77,31 @@ export class Map {
 
     public deleteChars(xStart: number, xEnd: number, y: number, autoWrap: boolean = false): string {
         let deleted = "";
+
         for (let x = xStart; x < xEnd; x++) {
-            let tempDeleted = this.deleteCharAt(x, y, autoWrap);
+            let tempDeleted = this.deleteCharAt(xStart - 1, y, autoWrap);
             if (tempDeleted == "")
                 return deleted;
             deleted += tempDeleted;
         }
+
         return deleted;
     }
 
-    //Fix remove posX -1 offset
     public deleteCharAt(posX: number, posY: number, autoWrap: boolean = true): string {
         let lineEnd = this.getLineEnd(posX, posY);
-        let deleted = "";
+        let deleted = this.tileAt(posX, posY);
 
-        if (this.tileAt(posX - 1, posY).type != TileType.GROUND)
-            return deleted;
+        if (deleted.type != TileType.GROUND)
+            return "";
 
-        deleted = this.tileAt(posX - 1, posY).value;
-        this.shiftTiles(posX, lineEnd - 1, posY, -1);
+        deleted = this.tileAt(posX, posY);
+        this.shiftTiles(posX + 1, lineEnd - 1, posY, -1);
 
         if (autoWrap)
-            this.wrapUpwards(posX, posY, 0);
+            this.wrapUpwards(posX + 1, posY, 0);
 
-        return deleted;
+        return deleted.value;
     }
 
     public shiftTiles(startX: number, endX: number, y: number, offset: number) {
@@ -127,28 +128,26 @@ export class Map {
         if (chars.length == 0)
             return true;
 
-        let overflow = this.getOverflowingChars(posX, posY, chars);
-        let writableTiles = this.countWritableTilesFrom(posX, posY);
+        let writableTileCount = this.countWritableTilesFrom(posX, posY);
+        let str = chars + this.getCharsAt(posX, this.getLineEnd(posX, posY) - 1, posY);
+        let newlIndex = chars.indexOf("\n");
+        let overflow = "";
+        let wrapIndex = -1;
 
-        if (chars.length > writableTiles) {
-            overflow = chars.substring(writableTiles,) + overflow;
-            chars = chars.substring(0, writableTiles);
-        }
+        if (str.length > writableTileCount)
+            wrapIndex = writableTileCount;
 
-        if (chars.at(-1) == "\n") {
-            let wrappingChars = this.getCharsAt(posX, this.getLineEnd(posX, posY) -1, posY);
-            console.log("wrapping after newLine: " + wrappingChars );
-            this.tryWrapDown(
-                posX + chars.length - 1,
-                posY,
-                wrappingChars)
-        }
-        else if (overflow.length > 0) {
+        if (newlIndex != -1 && newlIndex < writableTileCount)
+            wrapIndex = newlIndex + 1;
+
+        if (wrapIndex >= 0) {
+            overflow = str.substring(wrapIndex);
+            chars = chars.substring(0, wrapIndex);
             if (!this.tryWrapDown(posX, posY, overflow))
                 return false;
         }
-        this.insertCharsAt(posX, posY, chars);
 
+        this.insertCharsAt(posX, posY, chars);
         return true;
     }
 
@@ -163,8 +162,6 @@ export class Map {
                 if (row[posX + i].type == TileType.WALL)
                     break;
                 row[posX + i] = new Tile("'" + chars[i]);
-                // if (chars[i] == "\n")
-                //     break;
             }
 
             t[posY] = row;
@@ -196,64 +193,65 @@ export class Map {
         return posX + offset;
     }
 
-    private getPrevLineStart(x: number, y: number): Pos {
-        let lineStart = this.getLineStart(x, y);
-        let lineEnd = this.getLineEnd(x, y);
-        let prevLineStart = this.getLineStart(lineStart, y - 1);
-
-        if (prevLineStart > lineEnd)
-            throw "no prev line";
-        return new Pos(prevLineStart, y - 1);
-    }
-
     private getPrevLineEnd(x: number, y: number): Pos {
         let lineStart = this.getLineStart(x, y);
-        let prevLineEnd = this.getLineEnd(lineStart, y - 1);
+        let lineEnd = this.getLineEnd(lineStart, y);
+        let prevLineEnd = this.getLineEnd(lineEnd, y - 1);
 
         return new Pos(prevLineEnd - 1, y - 1);
     }
 
     private getNextLineStart(x: number, y: number): Pos {
         let lineStart = this.getLineStart(x, y);
-        let lineEnd = this.getLineEnd(x, y);
+        let limit = this.countWritableTilesFrom(lineStart, y);
         let nextLineStart = this.getLineStart(lineStart, y + 1);
 
-        if (nextLineStart > lineEnd)
+        if (nextLineStart > limit - lineStart)
             throw "no next line";
         return new Pos(nextLineStart, y + 1);
     }
 
     private getLineEnd(posX: number, posY: number): number {
-        let curTile;
-        let offset = -1;
-        do {
-            offset++;
-            curTile = this.tileAt(posX + offset, posY);
+        let curTile = this.tileAt(posX, posY);
+        let offset = 0;
+
+        if (curTile.type == TileType.GROUND) {
+            do {
+                offset++;
+                if (posX + offset < 0)
+                    break;
+                curTile = this.tileAt(posX + offset, posY);
+            }
+            while (curTile.type == TileType.GROUND)
         }
-        while (!curTile.type.isStatic)
+        else {
+            offset++;
+            do {
+                offset--;
+                if (posX + offset < 0) {
+                    offset = -1;
+                    break;
+                }
+                curTile = this.tileAt(posX + offset, posY);
+
+            }
+            while (curTile.type != TileType.GROUND)
+            offset++;
+        }
         return posX + offset;
     }
 
-    private nextLineExists(posX: number, posY: number): boolean {
-        let limit = this.getLineEnd(posX, posY);
-        let lineStart = this.getLineStart(posX, posY + 1)
-        return lineStart <= limit;
-    }
-
-    private getOverflowingChars(posX: number, posY: number, chars: string): string {
-        let lineEnd = this.getLineEnd(posX, posY);
-        let count = this.countWritableTilesFrom(lineEnd, posY);
-        let overflow = "";
-
-        if (chars.length > count) {
-            overflow = this.getCharsAt(lineEnd - count - 1, lineEnd - 1, posY);
-            // if (chars.length > count + (lineEnd - posX)) {
-            //     overflow = chars.substring((lineEnd - posX - count) * -1) + overflow;
-            // }
-            // console.log("LINE " + posY + " - OVERFLOWW: " + overflow);
+    private nextLineExists(posX: number, posY: number, limit: number = 0): boolean {
+        try {
+            let limit = this.countWritableTilesFrom(posX, posY) + posX;
+            let nextLineStart = this.getNextLineStart(posX, posY).x;
+            return nextLineStart <= limit;
         }
-        return overflow;
+        catch (e: any) {
+            return false;
+        }
     }
+
     private countWritableTilesFrom(posX: number, posY: number) {
         let tempTile;
         let count = -1;
@@ -267,46 +265,47 @@ export class Map {
         return count;
     }
 
-    private wrapUpwards(posX: number, posY: number, count: number): string {
+    private wrapUpwards(posX: number, posY: number, count: number, wrapFullLine: boolean = false): string {
         let lineStart = this.getLineStart(posX, posY);
-        let deletedChars = "";
         let lineEnd = this.getLineEnd(posX, posY);
-        let emptyCount = 0;
+        let emptyCount = this.countWritableTilesFrom(lineEnd, posY);
+        let limit = Math.min(count, lineEnd - lineStart);
+        let deletedChars = "";
+        let wrapFullNextLine: boolean;
+        let nextLineStart: number;
+        let toWrite: string;
 
-        deletedChars = this.deleteChars(lineStart + 1, lineStart + 1 + count, posY, false);
-        lineEnd = this.getLineEnd(posX, posY);
+        deletedChars = this.deleteChars(lineStart + 1, lineStart + 1 + limit, posY, false);
+        wrapFullNextLine = deletedChars.at(-1) == "\n";
 
-        if (deletedChars.length != count
-            || this.tileAt(lineEnd - 1, posY).value == "\n") {
+        if (!this.nextLineExists(posX, posY) ||
+            (this.tileAt(lineEnd - 1 - deletedChars.length, posY).value == "\n" && !wrapFullNextLine))
             return deletedChars;
-        }
 
-        while (this.tileAt(lineEnd + emptyCount, posY).type == TileType.EMPTY)
-            emptyCount++;
+        nextLineStart = this.getNextLineStart(posX, posY).x;
+        toWrite = this.wrapUpwards(nextLineStart, posY + 1, emptyCount + deletedChars.length);
+        this.write(Math.max(lineEnd - deletedChars.length, 0), posY, toWrite);
 
-        let nextLineStart = this.getNextLineStart(posX, posY).x;
-        let toWrite = this.wrapUpwards(nextLineStart, posY + 1, emptyCount);
-        this.write(lineEnd, posY, toWrite);
+        if (this.mustWrapUpwards(posX, posY))
+            this.wrapUpwards(this.getLineEnd(posX, posY) - 1, posY, 0);
 
         return deletedChars;
     }
 
     private tryWrapDown(posX: number, posY: number, chars: string): boolean {
-        if (!this.nextLineExists(posX, posY)) {
-            console.log("no next line from: " + posX + "-" + posY);
+        if (chars == "")
+            return true;
+        if (!this.nextLineExists(posX, posY))
             return false
-        }
 
-        let lineEnd = this.getLineEnd(posX, posY);
+        let lineStart = this.getLineStart(posX, posY);
+        let lineEnd = this.getLineEnd(lineStart, posY);
         let nextLineStart = this.getNextLineStart(posX, posY).x;
+        let deleted = "";
+        for (let i = 1; i <= chars.length; i++)
+            deleted += this.deleteCharAt(lineEnd - i, posY, false);
 
-        for (let i = 0; i < chars.length; i++) {
-            this.deleteCharAt(lineEnd - i, posY, false);
-        }
-
-        console.log("wrap writing: " + chars);
         this.write(nextLineStart, posY + 1, chars);
-
         return true;
     }
 
@@ -316,4 +315,23 @@ export class Map {
             str += this.tileAt(x, y).value;
         return str;
     }
-}      
+
+    public getLineChars(posX: number, posY: number) {
+        let lineStart = this.getLineStart(posX, posY);
+        let lineEnd = this.getLineEnd(posX, posY);
+        return this.getCharsAt(lineStart, lineEnd, posY);
+    }
+
+    public getLastTileOfLine(posX: number, posY: number): Tile {
+        let lineStart = this.getLineStart(posX, posY);
+        let lineEnd = this.getLineEnd(posX, posY);
+        let lastTile = this.tileAt(lineEnd - 1, posY);
+        return lastTile;
+    }
+
+    private mustWrapUpwards(posX: number, posY: number): boolean {
+        return this.getLastTileOfLine(posX, posY).value != "\n"
+            && this.tileAt(this.getLineEnd(posX, posY,), posY).type == TileType.EMPTY
+            && this.tileAt(this.getNextLineStart(posX, posY).x, posY + 1).type == TileType.GROUND
+    }
+}       

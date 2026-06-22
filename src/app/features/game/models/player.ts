@@ -1,6 +1,4 @@
 import { effect, signal } from "@angular/core";
-import { max, min } from "../../../shared/utils";
-import { GC } from "../constants/game-config"
 import { Map } from "./map";
 import { TileType } from "./types";
 import { Tile } from "./tile";
@@ -34,11 +32,10 @@ export class Player {
 
   public deleteChar() {
     let toDeletePos = this.map.moveOnText(this.pos().x, this.pos().y, -1);
-    // console.log("toDeletePos: " + toDeletePos.toString())
-    if (this.map.deleteCharAt(toDeletePos.x + 1, toDeletePos.y) != "") {
-      let newPos = this.map.moveOnText(this.pos().x, this.pos().y, -1);
-      this.setPos(newPos);
-    }
+    let deleted = this.map.deleteCharAt(toDeletePos.x, toDeletePos.y);
+    if (deleted != "")
+      this.setPos(toDeletePos);
+
   }
 
   public writeChar(char: string) {
@@ -103,7 +100,6 @@ export class Player {
       p.y += pos.y;
       return new Pos(p.x, p.y);
     });
-
   }
 
   private setPos(pos: Pos) {
@@ -112,6 +108,5 @@ export class Player {
       p.y = pos.y;
       return new Pos(p.x, p.y);
     });
-
   }
 }

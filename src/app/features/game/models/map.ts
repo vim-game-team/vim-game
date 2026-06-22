@@ -99,7 +99,10 @@ export class Map {
         this.shiftTiles(posX + 1, lineEnd - 1, posY, -1);
 
         if (autoWrap)
-            this.wrapUpwards(posX + 1, posY, 0);
+            if (deleted.value == "\n")
+                this.wrapUpwards(posX, posY, 0);
+            else
+                this.wrapUpwards(posX + 1, posY, 0);
 
         return deleted.value;
     }

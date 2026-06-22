@@ -1,11 +1,16 @@
-import { Component, signal } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { NavBarComponent } from './features/game/components/navBar/navBar.components';
+
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  standalone: true,
+  imports: [NavBarComponent, RouterOutlet],
+  //imports: [RouterOutlet],
   templateUrl: './app.html',
 })
-export class App {
+export class App{}
+/*export class App {
   protected readonly title = signal('vim-game');
-}
+}*/

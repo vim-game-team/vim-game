@@ -6,9 +6,11 @@ import { CmdUtils } from './command-utils.service';
 
 export class CommandService {
   public gameState: GameState;
+  private clipBoard: string;
 
   public constructor(gameState: GameState) {
     this.gameState = gameState;
+    this.clipBoard = "";
     CmdUtils.map = gameState.map;
     CmdUtils.player = gameState.player;
   }
@@ -31,11 +33,14 @@ export class CommandService {
           let result: any = executeFunction.call(this);
           break;
         }
-
-        case CmdType.MODESWITCH: {
-          let result: any = executeFunction.call(this);
+        case CmdType.WRITE: {
+          executeFunction.call(this);
+          this.clipBoard = "";
           break;
-
+        }
+        case CmdType.DELETE: {
+          this.clipBoard = executeFunction.call(this);
+          break;
         }
       }
     } catch (e: any) { console.log("error") }
@@ -128,5 +133,13 @@ export class CommandService {
     }
 
     return [offset - 1, 0];
+  }
+
+  private execute_x() {
+    return this.gameState.player.deleteChar();
+  }
+
+  private execute_p() {
+    this.gameState.player.write(this.clipBoard);
   }
 }

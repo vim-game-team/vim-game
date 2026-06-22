@@ -30,17 +30,18 @@ export class Player {
     return this.map.tileAt(this.pos().x, this.pos().y);
   }
 
-  public deleteChar() {
+  public deleteChar(): string {
     let toDeletePos = this.map.moveOnText(this.pos().x, this.pos().y, -1);
     let deleted = this.map.deleteCharAt(toDeletePos.x, toDeletePos.y);
     if (deleted != "")
       this.setPos(toDeletePos);
 
+    return deleted;
   }
 
-  public writeChar(char: string) {
-    this.map.write(this.pos().x, this.pos().y, char);
-    let newPos = this.map.moveOnText(this.pos().x, this.pos().y, char.length);
+  public write(str: string) {
+    this.map.write(this.pos().x, this.pos().y, str);
+    let newPos = this.map.moveOnText(this.pos().x, this.pos().y, str.length);
     this.setPos(newPos);
   }
 

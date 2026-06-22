@@ -2,6 +2,8 @@ export enum CmdType {
     MOVEMENT = "movement",
     MODESWITCH = "modeswitch",
     TEXTOBJ = "textobj",
+    WRITE = "write",
+    DELETE = "delete",
 }
 
 export const TileType = {

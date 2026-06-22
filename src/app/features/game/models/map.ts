@@ -117,7 +117,6 @@ export class Map {
         this.tiles.update(t => {
             let row = [...t[y]];
             row.copyWithin(startX + offset, startX, endX + 1);
-
             for (let i = 0; i < Math.abs(offset); i++)
                 row[fillStart + (i * sign)] = new Tile("$ ");
 

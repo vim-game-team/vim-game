@@ -30,6 +30,11 @@ import { Pos } from "../../models/pos";
                 }   
             </div> 
         }
+        <div class="player"
+        [style.transform]= "'translate(' 
+        + ( playerPos().x * gc.TILE_SIZE ) + 'px,' 
+        + ( playerPos().y * gc.TILE_SIZE ) + 'px)'" >
+            <div>
         </div>
     </div>
     `,
@@ -38,6 +43,7 @@ import { Pos } from "../../models/pos";
 export class MapComponent {
     public gameState = inject(GameState);
     public uiManager = inject(UiManager);
+    public playerPos = this.gameState.player.pos;
     public gc = GC;
 
     public buffer: WritableSignal<Pos>[][] = [[]];

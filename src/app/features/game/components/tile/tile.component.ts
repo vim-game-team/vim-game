@@ -28,7 +28,8 @@ export class TileComponent {
     return this.gameState.map.tileAt(this.x(), this.y());
   });
 
-  public isPlayer = computed(() =>
-    this.gameState.player.pos().x === this.x() &&
-    this.gameState.player.pos().y === this.y());
+  public isPlayer = computed(()=> false);
+  // public isPlayer = computed(() =>
+  //   this.gameState.player.pos().x === this.x() &&
+  //   this.gameState.player.pos().y === this.y() + 1);
 }

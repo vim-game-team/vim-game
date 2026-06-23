@@ -111,7 +111,7 @@ export class MapComponent {
         for (let x = 0; Math.abs(x) < Math.abs(offset); x += sign) {
             let index = sign == 1
                 ? (vpStart.x + x) % this.maxTilesHor
-                : (vpStart.x + x - 1) % this.maxTilesHor;
+                : (vpStart.x - x - 1) % this.maxTilesHor;
             for (let y = 0; y < this.maxTilesVer; y++) {
                 this.buffer[y][index].update((b) => {
                     return new Pos(b.x + this.maxTilesHor * sign, b.y);

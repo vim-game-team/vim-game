@@ -207,7 +207,7 @@ export class Map {
         let limit = this.countWritableTilesFrom(lineStart, y);
         let nextLineStart = this.getLineStart(lineStart, y + 1);
 
-        if (nextLineStart > limit - lineStart)
+        if (nextLineStart > limit + lineStart)
             throw "no next line";
         return new Pos(nextLineStart, y + 1);
     }

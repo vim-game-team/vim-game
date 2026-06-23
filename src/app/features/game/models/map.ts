@@ -129,7 +129,6 @@ export class Map {
     public write(posX: number, posY: number, chars: string): boolean {
         if (chars.length == 0)
             return true;
-
         let writableTileCount = this.countWritableTilesFrom(posX, posY);
         let str = chars + this.getCharsAt(posX, this.getLineEnd(posX, posY) - 1, posY);
         let newlIndex = chars.indexOf("\n");
@@ -142,7 +141,7 @@ export class Map {
         if (newlIndex != -1 && newlIndex < writableTileCount)
             wrapIndex = newlIndex + 1;
 
-        if (wrapIndex >= 0) {
+            if (wrapIndex >= 0) {
             overflow = str.substring(wrapIndex);
             chars = chars.substring(0, wrapIndex);
             if (!this.tryWrapDown(posX, posY, overflow))

@@ -116,7 +116,6 @@ export class CommandService {
     }
 
     offset = CmdUtils.offsetToNextNonCharType(curType, offset);
-
     return [offset - 1, 0];
   }
 
@@ -143,10 +142,16 @@ export class CommandService {
   }
 
   private execute_x() {
-    return this.gameState.player.deleteTiles();
+    let playerPos = this.gameState.player.pos();
+    let deleted =this.gameState.map.deleteCharAt(playerPos.x, playerPos.y);
+    let newPlayerPos = this.gameState.map.nextWalkableLeft(playerPos.x, playerPos.y);
+    this.gameState.player.setPos(newPlayerPos);
+
+    return deleted;
   }
 
   private execute_p() {
+    //TODO fix line pasting bug
     this.gameState.player.write(this.clipBoard);
   }
 

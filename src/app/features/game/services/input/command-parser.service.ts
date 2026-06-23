@@ -52,8 +52,10 @@ export class CommandParser {
 
 
     private tryExecute() {
-        if (this.inputArgs.at(0)?.cmd.requires == undefined ||
-            this.inputArgs.length == 2) {
+        if (this.inputArgs.length > 0 &&
+            (this.inputArgs.at(0)?.cmd.requires == undefined ||
+                this.inputArgs.length == 2)
+        ) {
             this.executor.execute(this.inputArgs);
             this.reset();
         }

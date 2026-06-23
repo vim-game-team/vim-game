@@ -9,15 +9,19 @@
     text-justify: center;
     font-size: 32px; 
 }
+
+.empty{
+    background-color: rgb(16, 16, 16);
+}
+
 .ground{
-    background-color: rgb(59, 168, 59);
+    background-color: rgb(65, 158, 65);
 }
+
 .wall{
-    background-color: rgb(122, 122, 122);
+    background-color: rgb(127, 123, 123);
 }
+
 .danger{
     background-color: rgb(211, 58, 58);
-}
-.player{
-    background-color: rgba(0, 0, 0, 0.271);
 }

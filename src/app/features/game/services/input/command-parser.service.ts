@@ -23,7 +23,7 @@ export class CommandParser {
         }
         this.tryExecute();
     }
-    
+
     private validateAndParse(input: string): boolean {
         let tempCMD;
         input = this.translateSynonyms(input)!;
@@ -38,8 +38,11 @@ export class CommandParser {
         if (tempCMD === undefined)
             return false;
 
-        if (this.inputArgs.length > 0
-            && !this.inputArgs.at(-1)?.cmd.expects.includes(tempCMD.type))
+        if (this.inputArgs.length >= 0 &&
+            this.inputArgs.at(0)?.cmd.requires != undefined &&
+            this.inputArgs.at(0)?.cmd.requires != tempCMD.returns &&
+            this.inputArgs.at(0)?.cmd.key != tempCMD.key
+        )
             return false;
 
         this.inputArgs.push(new InputToken(input, this.tempCount));
@@ -47,13 +50,14 @@ export class CommandParser {
         return true;
     }
 
-
     private tryExecute() {
-        if (this.inputArgs.at(-1)?.cmd.expects.length != 0)
-            return
-
-        this.executor.execute(this.inputArgs);
-        this.reset();
+        if (this.inputArgs.length > 0 &&
+            (this.inputArgs.at(0)?.cmd.requires == undefined ||
+                this.inputArgs.length == 2)
+        ) {
+            this.executor.execute(this.inputArgs);
+            this.reset();
+        }
     }
 
     private translateSynonyms(input: string) {

@@ -15,16 +15,16 @@ export class WriterService {
                 break;
             }
             case "Backspace": {
-                this.gameState.player.deleteChar();
+                this.gameState.player.deleteTiles();
                 break;
             }
             case "Enter": {
                 input = '\n';
-                this.gameState.player.writeChar(input);
+                this.gameState.player.write(input);
                 break;
             }
             default: {
-                this.gameState.player.writeChar(input);
+                this.gameState.player.write(input);
             }
         }
     }
@@ -39,5 +39,4 @@ export class WriterService {
             || validSpecialKeys.includes(input);
 
     }
-
 }

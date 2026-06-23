@@ -9,4 +9,10 @@ export class Pos {
     public toString(): string {
         return "[" + this.x + "-" + this.y + "]";
     }
+    public offset(p: Pos): Pos {
+        
+        this.x += p.x;
+        this.y += p.y;
+        return this;
+    }
 }

@@ -3,18 +3,23 @@ import { InputToken } from '../models/inputToken';
 import { Command } from '../../../shared/models/command';
 import { CharType, CmdType, InputMode } from '../models/types';
 import { CmdUtils } from './command-utils.service';
+import { Pos } from '../models/pos';
+import { TextArea } from '../models/textarea';
 
 export class CommandService {
   public gameState: GameState;
+  private clipBoard: string;
 
   public constructor(gameState: GameState) {
     this.gameState = gameState;
+    this.clipBoard = "";
     CmdUtils.map = gameState.map;
     CmdUtils.player = gameState.player;
   }
 
 
   public execute(tokens: InputToken[]) {
+
     let action: CmdType = tokens[0].cmd.type as CmdType;
     const executeFunction = (this as any)["execute_" + tokens[0].cmd.key];
 
@@ -31,11 +36,18 @@ export class CommandService {
           let result: any = executeFunction.call(this);
           break;
         }
-
-        case CmdType.MODESWITCH: {
-          let result: any = executeFunction.call(this);
+        case CmdType.WRITE: {
+          executeFunction.call(this);
+          this.clipBoard = "";
           break;
-
+        }
+        case CmdType.DELETE: {
+          this.clipBoard = executeFunction.call(this);
+          break;
+        }
+        case CmdType.OPERATOR: {
+          executeFunction.call(this, tokens[1].cmd!);
+          break;
         }
       }
     } catch (e: any) { console.log("error") }
@@ -104,7 +116,6 @@ export class CommandService {
     }
 
     offset = CmdUtils.offsetToNextNonCharType(curType, offset);
-
     return [offset - 1, 0];
   }
 
@@ -128,5 +139,44 @@ export class CommandService {
     }
 
     return [offset - 1, 0];
+  }
+
+  private execute_x() {
+    let playerPos = this.gameState.player.pos();
+    let deleted =this.gameState.map.deleteCharAt(playerPos.x, playerPos.y);
+    let newPlayerPos = this.gameState.map.nextWalkableLeft(playerPos.x, playerPos.y);
+    this.gameState.player.setPos(newPlayerPos);
+
+    return deleted;
+  }
+
+  private execute_p() {
+    //TODO fix line pasting bug
+    this.gameState.player.write(this.clipBoard);
+  }
+
+  private execute_d(cmd: Command) {
+    let textArea: TextArea;
+    let pPos = this.gameState.player.pos();
+    switch (cmd.key) {
+      case "d": {
+        let lineStart = this.gameState.map.getLineStart(pPos.x, pPos.y);
+        let lineEnd = this.gameState.map.getLineEnd(pPos.x, pPos.y);
+        textArea = new TextArea(new Pos(lineStart, pPos.y), new Pos(lineEnd, pPos.y));
+        break;
+      }
+      default: {
+        const argFunc = (this as any)["execute_" + cmd.key];
+        let offset = argFunc.call(this);
+        let offsetPos = new Pos(offset[0], offset[1]);
+        let endPos = new Pos(pPos.x, pPos.y).offset(offsetPos);
+        textArea = new TextArea(pPos, endPos);
+        break;
+      }
+    }
+
+    this.clipBoard = this.gameState.map.deleteChars(textArea.start.x + 1, textArea.end.x + 1, pPos.y, true)
+    let newPlayerPos = this.gameState.map.nextWalkableLeft(pPos.x, pPos.y);
+    this.gameState.player.setPos(newPlayerPos);
   }
 }

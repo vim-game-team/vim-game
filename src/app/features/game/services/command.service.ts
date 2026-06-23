@@ -141,9 +141,15 @@ export class CommandService {
     return [offset - 1, 0];
   }
 
+  private execute_$() {
+    let playerPos = this.gameState.player.pos();
+    let lineEnd = this.gameState.map.getLineEnd(playerPos.x, playerPos.y) -1;
+    return [lineEnd - playerPos.x, 0];
+  }
+
   private execute_x() {
     let playerPos = this.gameState.player.pos();
-    let deleted =this.gameState.map.deleteCharAt(playerPos.x, playerPos.y);
+    let deleted = this.gameState.map.deleteCharAt(playerPos.x, playerPos.y);
     let newPlayerPos = this.gameState.map.nextWalkableLeft(playerPos.x, playerPos.y);
     this.gameState.player.setPos(newPlayerPos);
 

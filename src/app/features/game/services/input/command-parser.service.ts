@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { InputToken } from "../../models/inputToken.js";
 import { addAsDigits, isNumeric } from "../../../../shared/utils.js";
-import { commands } from "../../../../shared/constants/commands.js";
+import { commands } from "../../../../shared/constants/commandRegistry.js";
 import { CommandService } from "../command.service.js";
 import { GameState } from "../game-state.service.js";
 import { CmdType, InputMode } from "../../models/types.js";

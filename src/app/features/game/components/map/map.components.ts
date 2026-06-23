@@ -34,7 +34,7 @@ import { Pos } from "../../models/pos";
         [style.transform]= "'translate(' 
         + ( playerPos().x * gc.TILE_SIZE ) + 'px,' 
         + ( playerPos().y * gc.TILE_SIZE ) + 'px)'" >
-            <div>
+        <div>
         </div>
     </div>
     `,
@@ -92,8 +92,8 @@ export class MapComponent {
             : -1;
         for (let y = 0; y < Math.abs(offset); y++) {
             let index = sign == 1
-                ? vpStart.y + y % this.maxTilesVer
-                : (vpStart.y + y - 1) % this.maxTilesVer;
+                ? (vpStart.y + y) % this.maxTilesVer
+                : (vpStart.y - y - 1 ) % this.maxTilesVer;
             for (let x = 0; x < this.maxTilesHor; x++) {
                 this.buffer[index][x].update((b) => {
                     return new Pos(b.x, b.y + this.maxTilesVer * sign);
@@ -110,7 +110,7 @@ export class MapComponent {
             : -1;
         for (let x = 0; Math.abs(x) < Math.abs(offset); x += sign) {
             let index = sign == 1
-                ? vpStart.x + x % this.maxTilesHor
+                ? (vpStart.x + x) % this.maxTilesHor
                 : (vpStart.x + x - 1) % this.maxTilesHor;
             for (let y = 0; y < this.maxTilesVer; y++) {
                 this.buffer[y][index].update((b) => {

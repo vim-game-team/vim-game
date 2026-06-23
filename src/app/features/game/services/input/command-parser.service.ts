@@ -50,7 +50,6 @@ export class CommandParser {
         return true;
     }
 
-
     private tryExecute() {
         if (this.inputArgs.length > 0 &&
             (this.inputArgs.at(0)?.cmd.requires == undefined ||
